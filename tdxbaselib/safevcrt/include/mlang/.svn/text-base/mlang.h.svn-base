@@ -1,0 +1,44 @@
+#ifndef __MLANG__H__
+#define __MLANG__H__
+
+// 语言包管理器
+class MLANG_IMP CMLangMngr
+{
+public:
+	CMLangMngr();
+	virtual~CMLangMngr();
+	VOID Initialize(HINSTANCE hInst,LONG nBufSize);
+	VOID SetLangPackInst(HINSTANCE hLangPackInst);
+	VOID SetLangPackFile(LPCTSTR pszLangPackFile);
+	HINSTANCE GetLangPackInst();
+	LPCSTR LoadString(WORD wID);
+	LPCSTR LoadText(WORD wID,LPSTR pszBuf,LONG cbBuf);
+protected:
+	HINSTANCE m_hInst;
+	HINSTANCE m_hLangPackInst;
+	HMODULE   m_hLangPackModule;
+	LPVOID m_pMap;
+	LPSTR m_pBuf;
+	LONG m_nBufSize;
+	LONG m_nBufUsed;
+};
+
+// 语言包管理相关函数
+#ifdef PLATFORM_WINDOWS
+	#pragma comment(lib,"version.lib")
+#endif
+MLANG_IMP VOID mlangSetMngr(CMLangMngr* pMngr,HINSTANCE hInst,LONG nBufSize=10*1024);
+MLANG_IMP VOID mlangSetLangPackInst(HINSTANCE hLangPackInst);
+MLANG_IMP VOID mlangSetLangPackFile(LPCTSTR pszLangPackFile);
+MLANG_IMP HINSTANCE mlangGetLangPackInst();
+// 语言包代码页函数
+
+
+// 语言包辅助和应用函数
+MLANG_IMP LPCSTR LangId2ShortName(WORD wLangId,LPSTR pszPostfix,LONG cbPostfix);
+MLANG_IMP UINT LangId2CodePage(WORD wLangId);
+MLANG_IMP WORD LangId2CompatibleLangId(WORD wLangId);
+MLANG_IMP LPCSTR MLANGSTR(WORD wID);
+MLANG_IMP LPCSTR MLANGTXT(WORD wID,LPSTR pszBuf,LONG cbBuf);
+
+#endif // THIS_FILE

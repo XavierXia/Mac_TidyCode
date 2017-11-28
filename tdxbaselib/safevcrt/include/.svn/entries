@@ -1,0 +1,168 @@
+10
+
+dir
+6
+svn://192.168.2.242:9999/TdxFramework/safevcrt/include
+svn://192.168.2.242:9999/TdxFramework
+
+
+
+2013-05-28T21:37:15.790832Z
+6
+zlj
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0cdf20bb-e411-44e5-9278-4333f1c005b8
+
+litegdi
+dir
+
+clibmisc
+dir
+
+litefileio
+dir
+
+linux2win.h
+file
+
+
+
+
+
+819fdd60115a5fd9172dd5f4e53381d6
+2013-05-28T21:37:15.790832Z
+6
+zlj
+
+profile.h
+file
+
+
+
+
+2013-05-27T21:45:23.785628Z
+04d7cfb757429828545277783b756c44
+2013-05-27T21:31:50.667279Z
+2
+zlj
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2252
+
+safevcrt_types.h
+file
+
+
+
+
+
+4e283c0626c7b4d449bebe096780dbb2
+2013-05-28T21:37:15.790832Z
+6
+zlj
+
+collection
+dir
+
+compress
+dir
+
+liteini
+dir
+
+mlang
+dir
+
+safevcrt.h
+file
+
+
+
+
+
+8a359e81a27751b8b9979ff3257a40d7
+2013-05-28T21:37:15.790832Z
+6
+zlj
+
+litemd5
+dir
+
+safevcrt_os.h
+file
+
+
+
+
+2013-05-27T21:45:23.789680Z
+076be1ecb7cfe6aec60e97b9f89b6d1f
+2013-05-27T21:31:50.667279Z
+2
+zlj
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4467
+
+samples
+dir
+
+security
+dir
+
+litedbf
+dir
+
+litexml
+dir
+

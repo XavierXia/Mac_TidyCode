@@ -1,0 +1,187 @@
+//////////////////////////////////////////////////////////////////////////
+//  Copyright (C) 2013 - All Rights Reserved
+//  模块名称: clibtempl
+//  创建日期: 2003/01/16
+//  代码编写: zhanglijun
+//  功能说明: 内存表
+//  引用示例: 
+//  修改记录:
+//////////////////////////////////////////////////////////////////////////
+#ifndef __MEM_TABLE__H__
+#define __MEM_TABLE__H__
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+// 核心字段
+typedef struct tagRECKRNL
+{	BOOL m_bDeleted;			// 删除标志
+	LONG m_nRecordVer;			// 记录版本号
+	LONG m_nRecordRef;			// 记录引用记数
+	LPVOID m_pCopyFrom;			// 原记录指针
+} RECKRNL;
+
+
+// 索引基类
+interface IIndexRender
+{	virtual BOOL OnInsertRecord(LPVOID pRecordVoid) PURE;
+	virtual VOID OnDeleteRecord(LPVOID pRecordVoid) PURE;
+	virtual VOID OnSelectUsingIndex(LONG nTop,LPVOID pKeyVoid,LPVOID plstResultsVoid) PURE;
+	virtual DWORD OnSelectUsingIndexEx(DWORD dwMax,LONG nTop,LPVOID pKeyVoid,LPVOID* ppResults) PURE;
+	virtual VOID DeleteRender() PURE;
+};
+
+
+// 索引实现类
+template<class KEY,class RECORD,int SUBINDEXNUM>
+class TIndex : public IIndexRender
+{
+public:
+	static IIndexRender* Create(LONG nBlockSize,LONG nHashSize,BOOL bUnique) { return new TIndex<KEY,RECORD,SUBINDEXNUM>(nBlockSize,nHashSize,bUnique); }
+public:
+	TIndex(LONG nBlockSize,LONG nHashSize,BOOL bUnique)
+		: m_ChainMap()
+		, m_ChainList(nBlockSize)
+		, m_bUnique(bUnique)
+		{	m_ChainMap.InitHashTable(nHashSize);
+		}
+	virtual~TIndex()
+		{
+		}
+	// 记录插入回调(构造索引)
+	virtual BOOL OnInsertRecord(LPVOID pRecordVoid);
+	// 记录删除回调(撤销索引)
+	virtual VOID OnDeleteRecord(LPVOID pRecordVoid);
+	// 记录查找回调
+	virtual VOID OnSelectUsingIndex(LONG nTop,LPVOID pKeyVoid,LPVOID plstResultsVoid);
+	virtual DWORD OnSelectUsingIndexEx(DWORD dwMax,LONG nTop,LPVOID pKeyVoid,LPVOID* ppResults);
+	// 对象删除
+	virtual VOID DeleteRender();
+protected:
+	typedef struct tagCHAIN
+	{	RECORD* m_pRecord;
+		POSITION m_posNext;
+	} CHAIN;
+	typedef TMap<KEY,const KEY&,LPVOID,LPVOID> CHAINMAP;
+	typedef TList<CHAIN,CHAIN&> CHAINLIST;
+protected:
+	// 索引构建
+	BOOL InsertIndex(const KEY& Key,RECORD* pRecord);
+	// 索引删除
+	VOID DeleteIndex(const KEY& Key,RECORD* pRecord);
+protected:
+	CHAINMAP m_ChainMap;
+	CHAINLIST m_ChainList;
+	BOOL m_bUnique;
+};
+
+
+template<class PKEY,class RECORD,INT INDEXNUM>
+class TMemTable
+{
+public:
+	TMemTable(LONG nBlockSize,LONG nHashSize)
+		: m_RecordMap()
+		, m_RecordList(nBlockSize)
+		{	m_RecordMap.InitHashTable(nHashSize);
+			if(INDEXNUM>0) memset(m_apIndexRender,0,size_of(LPVOID)*INDEXNUM);
+		}
+	virtual~TMemTable()
+		{	for(LONG nIndex=0; nIndex<INDEXNUM; nIndex++)
+			{	IIndexRender* pIIndexRender=m_apIndexRender[nIndex];
+				if(pIIndexRender==NULL) continue;
+				pIIndexRender->DeleteRender();
+			}
+			if(INDEXNUM>0) memset(m_apIndexRender,0,size_of(LPVOID)*INDEXNUM);
+		}
+protected:
+	typedef TMap<PKEY,const PKEY&,LPVOID,LPVOID> RECORDMAP;
+	typedef TList<RECORD,RECORD&> RECORDLIST;
+	typedef TList<RECORD*,RECORD*&> RECORDPTRLIST;
+	typedef VOID (*ARGS_SHIFTER)(va_list& args);
+	typedef VOID (*VIEWER)(RECORD* pRecord);
+	typedef BOOL (*WHERE)(RECORD* pRecord,va_list args);
+	typedef VOID (*UPDATE_ROUTINE)(RECORD* pRecord,va_list args);
+	typedef VOID (*INSERTUPDATE_ROUTINE)(RECORD* pRecord,const PKEY* pKey,BOOL bInsert,va_list args);
+public:
+	// 创建索引
+	VOID BindIndex(LONG nIndex,IIndexRender* pIIndexRender);
+
+	// 获取记录数目
+	LONG GetRecordNum();
+
+	// 列出数据
+	VOID List(LONG nTop,VIEWER pfnView);
+
+	// 插入记录
+	BOOL Insert(RECORD& Record);
+	
+	// 获取记录数目
+	LONG GetCount() { return m_RecordMap.GetCount(); }
+
+	// 选取记录: 按照主键,按照条件,按照索引
+	BOOL Select(RECORD& Record,const PKEY& PKey);
+	LONG SelectWhere(RECORDLIST* plstResult,LONG nTop,WHERE pfnWhere,...);
+	LONG SelectByIndex(RECORDLIST* plstResult,LONG nTop,LONG nIndex,LPVOID pKey,WHERE pfnWhere,...);
+
+	// 选取并创建修改副本: 按照主键,按照条件,按照索引
+	RECORD* SelectForUpdate(const PKEY& PKey);
+	LONG SelectForUpdateWhere(RECORDPTRLIST* plstForUpdate,LONG nTop,WHERE pfnWhere,...);
+	LONG SelectForUpdateByIndex(RECORDPTRLIST* plstForUpdate,LONG nTop,LONG nIndex,LPVOID pKey,WHERE pfnWhere,...);
+
+	// 提交或撤销修改,批量提交或撤销修改(能提交的全部提交,不能提交的撤销)
+	BOOL CommitUpdate(RECORD* pRecord,BOOL bCancel=FALSE);
+	BOOL BatchCommitUpdate(RECORDPTRLIST* plstForUpdate,BOOL bCancel=FALSE);
+
+	// 更新记录
+	BOOL Update(RECORD* pAffect,const PKEY& PKey,UPDATE_ROUTINE pfnUpdateRoutine,...);
+	LONG UpdateWhere(RECORDLIST* plstAffect,LONG nTop,WHERE pfnWhere,ARGS_SHIFTER pfnWhereShifer,UPDATE_ROUTINE pfnUpdateRoutine,...);
+	LONG UpdateByIndex(RECORDLIST* plstAffect,LONG nTop,LONG nIndex,LPVOID pKey,WHERE pfnWhere,ARGS_SHIFTER pfnWhereShifer,UPDATE_ROUTINE pfnUpdateRoutine,...);
+
+	// 插入或更新
+	BOOL InsertOrUpdate(RECORD* pAffect,const PKEY& PKey,INSERTUPDATE_ROUTINE pfnInsertUpdateRoutine,...);
+	BOOL InsertOrUpdateWhere(RECORD* pAffect,WHERE pfnWhere,ARGS_SHIFTER pfnWhereShifer,INSERTUPDATE_ROUTINE pfnInsertUpdateRoutine,...);
+	BOOL InsertOrUpdateByIndex(RECORD* pAffect,LONG nIndex,LPVOID pKey,WHERE pfnWhere,ARGS_SHIFTER pfnWhereShifer,INSERTUPDATE_ROUTINE pfnInsertUpdateRoutine,...);
+
+	// 删除记录: 按照主键,按照条件,按照索引
+	BOOL Delete(RECORD* pAffect,const PKEY& PKey);
+	LONG DeleteWhere(RECORDLIST* plstAffect,LONG nTop,WHERE pfnWhere,...);
+	LONG DeleteByIndex(RECORDLIST* plstAffect,LONG nTop,LONG nIndex,LPVOID pKey,WHERE pfnWhere,...);
+
+	// 快速访问
+	LONG SelectWhereEx(RECORD* pResult,DWORD dwMax,LONG nTop,WHERE pfnWhere,...);
+	LONG SelectByIndexEx(RECORD* pResult,DWORD dwMax,LONG nTop,LONG nIndex,LPVOID pKey,WHERE pfnWhere,...);
+	LONG SelectForUpdateWhereEx(RECORD** ppForUpdate,DWORD dwMax,LONG nTop,WHERE pfnWhere,...);
+	LONG SelectForUpdateByIndexEx(RECORD** ppForUpdate,DWORD dwMax,LONG nTop,LONG nIndex,LPVOID pKey,WHERE pfnWhere,...);
+	BOOL BatchCommitUpdateEx(RECORD** ppForUpdate,DWORD dwCount,BOOL bCancel=FALSE);
+	LONG UpdateWhereEx(RECORD* pAffect,DWORD dwMax,LONG nTop,WHERE pfnWhere,ARGS_SHIFTER pfnWhereShifer,UPDATE_ROUTINE pfnUpdateRoutine,...);
+	LONG UpdateByIndexEx(RECORD* pAffect,DWORD dwMax,LONG nTop,LONG nIndex,LPVOID pKey,WHERE pfnWhere,ARGS_SHIFTER pfnWhereShifer,UPDATE_ROUTINE pfnUpdateRoutine,...);
+	LONG DeleteWhereEx(RECORD* pAffect,DWORD dwMax,LONG nTop,WHERE pfnWhere,...);
+	LONG DeleteByIndexEx(RECORD* pAffect,DWORD dwMax,LONG nTop,LONG nIndex,LPVOID pKey,WHERE pfnWhere,...);
+
+protected:
+	// 查找记录
+	VOID SelectRecord(LONG nTop,WHERE pfnWhere,va_list argWhere,RECORDPTRLIST& lstPreliminary);
+	VOID SelectRecord(LONG nTop,IIndexRender* pIIndexRender,LPVOID pKey,WHERE pfnWhere,va_list argWhere,RECORDPTRLIST& lstPreliminary);
+	// 查找记录(使用数组)
+	DWORD SelectRecordEx(DWORD dwMax,LONG nTop,WHERE pfnWhere,va_list argWhere,RECORD** ppPreliminarys);
+	DWORD SelectRecordEx(DWORD dwMax,LONG nTop,IIndexRender* pIIndexRender,LPVOID pKey,WHERE pfnWhere,va_list argWhere,RECORD** ppPreliminarys);
+	// 插入记录
+	BOOL InsertRecord(RECORD* pAffect,const PKEY& PKey,RECORD& Record);
+	// 删除记录
+	VOID DeleteRecord(RECORD* pAffect,RECORD* pRecord);
+	// 创建记录副本(修改用途)
+	RECORD* CreateCopyRecord(RECORD* pRecord);
+protected:
+	CLock m_CsTable;
+	RECORDMAP m_RecordMap;
+	RECORDLIST m_RecordList;
+	IIndexRender* m_apIndexRender[INDEXNUM+1];
+};
+
+
+
+// 包含内联实现
+#include "memtable.inl"
+
+#endif

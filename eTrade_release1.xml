@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF8"?>
+<ProfileOfSystem>
+	<Classification Prompt="服务券商">
+		<ITEM ClassificationName="平安证券" QsTag="平安证券" QsId="7" QsJc="PAZQ">
+			<Misc>
+				<Option SwapCombo="0" ColorYzm="1" ZJZHMaxLen="0" MustDigitPwd="0" MustAccountLen="0" MaxAccountLen="0" AqfsCombo="0" UrlApplyAuthPass="" UrlModifyAuthPass="" HasCXMode="0" AuthPassInfo="" MustTXMM="0"/>
+			</Misc>
+			<Site bfindbest="0">
+                <ITEM Name="平安证券交易中心1" Address="202.69.19.56" Port="7738" Weight="0" TradVer="2" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券交易中心2" Address="202.69.19.56" Port="7708" Weight="0" TradVer="2" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券新疆交易中心1" Address="124.117.242.37" Port="7738" Weight="0" TradVer="2" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券新疆交易中心2" Address="124.117.242.38" Port="7738" Weight="0" TradVer="2" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券交易绿色通道1" Address="202.69.19.56" Port="80" Weight="0" TradVer="2" HostType="0" yybids="" areas=""/>
+                <ITEM Name="宝信交易中心电信" Address="101.89.64.195" Port="7738" Weight="0" TradVer="2" HostType="0" yybids="" areas=""/>
+                <ITEM Name="宝信交易中心移动" Address="117.184.220.166" Port="7738" Weight="0" TradVer="2" HostType="0" yybids="" areas=""/>
+                <ITEM Name="宝信交易中心联通" Address="43.254.105.93" Port="7738" Weight="0" TradVer="2" HostType="0" yybids="" areas=""/>
+                <ITEM Name="宝信交易中心绿色通道" Address="101.89.64.195" Port="80" Weight="0" TradVer="2" HostType="0" yybids="" areas=""/>
+         		</Site>
+			<HQSite bfindbest="1">
+                <ITEM Name="平安证券东莞行情主站" Address="14.17.75.11" Port="7709" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券南京行情" Address="202.102.90.146" Port="7709" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券上海上证云行情" Address="114.80.63.71" Port="7709" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券上海行情" Address="180.163.114.162" Port="7709" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券北京行情" Address="203.212.5.66" Port="7709" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券天津行情" Address="125.39.116.241" Port="7709" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券重庆行情" Address="222.180.170.153" Port="7709" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券长沙行情" Address="175.6.5.131" Port="7709" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券福州行情" Address="27.151.2.122" Port="7709" Weight="0" TradVer="NO" HostType="3" yybids="" areas=""/>
+                <ITEM Name="平安证券新疆行情1" Address="61.128.122.111" Port="7709" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券新疆行情2" Address="61.128.122.112" Port="7709" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券网通绿色通道" Address="203.212.5.68" Port="80" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券电信绿色通道" Address="180.163.114.164" Port="80" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券廊坊行情主站" Address="221.194.181.145" Port="7709" Weight="0" TradVer="NO" HostType="3" yybids="" areas=""/>
+                <ITEM Name="平安证券深圳行情主站" Address="114.67.61.70" Port="7709" Weight="0" TradVer="NO" HostType="0" yybids="" areas=""/>
+                <ITEM Name="平安证券广州行情主站" Address="119.29.51.30" Port="7709" Weight="0" TradVer="NO" HostType="3" yybids="" areas=""/>
+	 		</HQSite>
+			<VipSite/>
+			<LoginMode>
+          		<ITEM AccountType="0" Prompt="资金帐号" HostType="0"/>
+			</LoginMode>
+			<SecurityMode>
+				<ITEM SecurityType="0" Prompt="验  证 码"/>
+			</SecurityMode>
+			<Branch>
+				<ITEM ID="0001" AutoFill="0" Name="普通交易" NoPrefix="0" HostType="0" Prefix=""/>
+			</Branch>
+			<Network>
+				<Timeout	 JobTimeout="25" ConnectTimeout="8"/>
+			</Network>
+			<HqParams autorefreshhq="1" autocheckfast="1"  hqrefreshspan="5" sortrefreshspan="10" fontsize="16"/>
+			<ZxLinks mainName="" mainUrl="">
+				<ITEM name="" url="" />
+				<ITEM name="" url=""/>
+				<ITEM name="" url=""/>
+				<ITEM name="" url=""/>
+			</ZxLinks>
+			<JyParams lockscreenspan="30" />
+			<UpdateInfo  MainVer="6" AssVer="01" UpdateTag="PAZQ_MACOSX" />
+			<StyleParams colorStyle="0" paomaStyle="0" lanStyle="0" backStyle="0" fqStyle="0"/>
+			<GridParams>
+				<ITEM id="0" name="序号" width="40" sortid="" showFlag="1" fixFlag ="1" marketFlag="1"/>
+				<ITEM id="1" name="代码" width="72" sortid="0" showFlag="1" fixFlag ="1" marketFlag="1"/>
+				<ITEM id="2" name="名称" width="82" sortid="1" showFlag="1" fixFlag ="1" marketFlag="1"/>
+				<ITEM id="3" name="涨幅" width="72" sortid="14" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="4" name="现价" width="72" sortid="6" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="5" name="涨跌" width="72" sortid="12" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="6" name="买入价" width="72" sortid="7" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="7" name="卖出价" width="72" sortid="8" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="8" name="昨收" width="72" sortid="2" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="9" name="总量" width="92" sortid="9" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="10" name="量比" width="72" sortid="35" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="11" name="换手" width="72" sortid="36" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="12" name="今开" width="72" sortid="3" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="13" name="最高" width="72" sortid="4" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="14" name="最低" width="72" sortid="5" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="15" name="总金额" width="82" sortid="10" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="16" name="振幅" width="72" sortid="15" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="17" name="总股本" width="92" sortid="37" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="18" name="流通股本" width="92" sortid="37" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="19" name="总市值" width="92" sortid="39" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="20" name="市盈率" width="92" sortid="17" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="21" name="内盘" width="72" sortid="18" showFlag="1" fixFlag ="0" marketFlag="1"/>
+				<ITEM id="22" name="外盘" width="72" sortid="19" showFlag="1" fixFlag ="0" marketFlag="1"/>
+			</GridParams>
+		</ITEM>
+	</Classification>
+</ProfileOfSystem>
