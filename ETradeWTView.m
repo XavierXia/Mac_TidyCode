@@ -13,16 +13,18 @@
 #define CODE_TEXT_FLAG 4
 #define NUM_TEXT_FLAG 5
 #define XHKE_TEXT_FLAG 6
+#define PTGDDM_COM_FLAG 7
 #define PERROWHEIGHT 26
 #define PERROWHEIGHT_PK 22
 #define WT_WIDTH 230
 #define textFieldtag 564
 #define MARIN_HEIGHT 2
 
+
 #define TOPMARIN_HEIGHT 5
 
 @implementation ETradeWTView
-@synthesize tag,wtPrice,gpcodeText,gppriceText,showDelegate,m_brefreshflag,m_bOnlyRunOne,maxbuysellLabel;
+@synthesize tag,wtPrice,gpcodeText,gppriceText,showDelegate,m_brefreshflag,m_bOnlyRunOne,xgsgMSGS,maxbuysellLabel;
 @synthesize bDelegates;
 @synthesize wtViewFrame;
 
@@ -48,6 +50,7 @@
 		}
         nlastsjwtflag=-1;
         m_bOnlyRunOne = YES;
+        xgsgMSGS = 100;
 		
 		m_szsjwtfsmc=[[NSArray arrayWithObjects:@"限价委托",@"对方最优价格",@"本方最优价格",@"即时成交剩余撤销",@"五档即成剩撤",@"全额成交或撤销",nil] retain];
 		m_nszsjwtfsdm=[[NSArray arrayWithObjects:@"0",@"1",@"2",@"3",@"4",@"5",nil] retain];
@@ -57,6 +60,7 @@
 		
 		titleLabelArray = [[NSArray arrayWithObjects:@"股东代码:",@"证券代码:",@"报价方式:",@"买入价格:",@"可用资金:",@"最大可买:",@"买入数量:",nil] retain];
 		pkTitleArray = [[NSMutableArray arrayWithObjects:@"卖五",@"卖四",@"卖三",@"卖二",@"卖一",@"买一",@"买二",@"买三",@"买四",@"买五",nil] retain];
+        DBPHZTitleArray = [NSMutableArray arrayWithCapacity:2];
 		
 		int i ;
 		int _length = [titleLabelArray count];
@@ -337,7 +341,10 @@
         [PTgddmCombobox setUsesDataSource:YES];
         [PTgddmCombobox setDelegate:self];
         [PTgddmCombobox setDataSource:self];
-        [[PTgddmCombobox cell]setTitle:@""];
+        [PTgddmCombobox setTag:PTGDDM_COM_FLAG];
+        
+        NSString* ptgd = @"";
+        [[PTgddmCombobox cell]setTitle: ptgd];
         [DBPHZView addSubview:PTgddmCombobox];
         
         
@@ -493,8 +500,68 @@
         [doneButton3 setTarget:self];
         [doneButton3 setAction:@selector(doneButtonClick:)];
         [XJHKView addSubview:doneButton3];
-        
         [self addSubview:XJHKView];
+        
+        //添加 新股申购
+        XGSGView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0,230, frame.size.height)];
+        [XGSGView setWantsLayer:YES];
+        XGSGView.layer.backgroundColor = [NSColor colorWithCalibratedRed:231.0/255.0 green:231.0/255.0 blue:231.0/255.0 alpha:1.000].CGColor;
+        
+        NSArray * XGSGTitle=[[NSArray arrayWithObjects:@"股东代码:",@"新股代码:",@"申购价格:",@"申购下限:",@"申购上限:",@"可用资金:",@"最大可申:",@"申购数量:",nil] retain];
+        for (int i=0; i<XGSGTitle.count; i++) {
+            NSTextField * tempText = [[NSTextField alloc]init];
+            [tempText setEditable:NO];
+            [tempText setBackgroundColor:[NSColor clearColor]];
+            [tempText setBordered:NO];
+            [tempText setFrame:NSMakeRect(leftBlankWidth, frame.size.height  - (i+1)*PERROWHEIGHT-TOPMARIN_HEIGHT, 70, PERROWHEIGHT)];
+            [[tempText cell] setFont:[NSFont systemFontOfSize:14.0f]];
+            [[tempText cell] setTextColor:[NSColor blackColor]];
+            [[tempText cell] setTitle:[XGSGTitle objectAtIndex:i]];
+            [tempText setTag:i+textFieldtag];
+            [XGSGView addSubview:tempText];
+            [tempText release];
+        }
+        
+
+        sgjgLabel = [[NSTextField alloc]init];
+        [sgjgLabel setEditable:NO];
+        [sgjgLabel setBackgroundColor:COLOR_TRADEBAR_BACKGROUND];
+        [sgjgLabel setBordered:NO];
+        [sgjgLabel setFrame:NSMakeRect(70, frame.size.height  - 3*PERROWHEIGHT-TOPMARIN_HEIGHT, 140, PERROWHEIGHT)];
+        [sgjgLabel setBezeled:NO];
+        [sgjgLabel setBezelStyle:NSTextFieldSquareBezel];
+        [[sgjgLabel cell] setFont:[NSFont systemFontOfSize:15.0f]];
+        [[sgjgLabel cell] setTextColor:[NSColor blackColor]];
+        [[sgjgLabel cell] setTitle:@"0"];
+        [XGSGView addSubview:sgjgLabel];
+        
+        sgxxLabel = [[NSTextField alloc]init];
+        [sgxxLabel setEditable:NO];
+        [sgxxLabel setBackgroundColor:COLOR_TRADEBAR_BACKGROUND];
+        [sgxxLabel setBordered:NO];
+        [sgxxLabel setBezeled:NO];
+        [sgxxLabel setBezelStyle:NSTextFieldSquareBezel];
+        [sgxxLabel setFrame:NSMakeRect(70, frame.size.height  - 4*PERROWHEIGHT+2-TOPMARIN_HEIGHT, 140, PERROWHEIGHT-4)];
+        [[sgxxLabel cell] setTextColor:[NSColor blackColor]];
+        [XGSGView addSubview:sgxxLabel];
+        
+        sgsxLabel = [[NSTextField alloc]init];
+        [sgsxLabel setEditable:NO];
+        [sgsxLabel setBackgroundColor:COLOR_TRADEBAR_BACKGROUND];
+        [sgsxLabel setBordered:NO];
+        [sgsxLabel setBezeled:NO];
+        [sgsxLabel setBezelStyle:NSTextFieldSquareBezel];
+        [sgsxLabel setFrame:NSMakeRect(70, frame.size.height  - 5*PERROWHEIGHT+2-TOPMARIN_HEIGHT, 140, PERROWHEIGHT-4)];
+        [[sgsxLabel cell] setTextColor:[NSColor blackColor]];
+        [XGSGView addSubview:sgsxLabel];
+        
+        NSButton * doneButton4 = [[NSButton alloc] init];
+        [doneButton4 setFrame:NSMakeRect(140, frame.size.height  - 9*PERROWHEIGHT+2-TOPMARIN_HEIGHT, 70, PERROWHEIGHT-4)];
+        [[doneButton4 cell] setTitle:@"申  购"];
+        [doneButton4 setTarget:self];
+        [doneButton4 setAction:@selector(doneButtonClick:)];
+        [XGSGView addSubview:doneButton4];
+        [self addSubview:XGSGView];
         
 		baddflag=YES;
 		m_bbusy = NO;
@@ -531,6 +598,46 @@
 	}
 	
 	return self;
+}
+
+-(NSString *)GetGDTypeStr:(int)SCLB
+{
+    switch (SCLB) {
+        case SZAG:
+            return @"深A";
+        case SZBG:
+            return @"深B";
+        case SHAG:
+            return @"沪A";
+        case SHBG:
+            return @"沪B";
+        case SBAG:
+            return @"三板A";
+            break;
+        case SBBG:
+            return @"三板B";
+        case SBGB:
+            return @"三板港";
+        case 21:
+            return @"郑交所";
+        case 22:
+            return @"上交所";
+        case 23:
+            return @"大交所";
+        case 26:
+            return @"中金所";
+        case 38:
+            return @"新三板A股";
+        case 39:
+            return @"新三板B股";
+        case 40:
+            return @"沪港通";
+        case 41:
+            return @"深港通";
+        default:
+            break;
+    }
+    return @"";
 }
 
 -(void) controlTextDidBeginEditing:(NSNotification *)obj{
@@ -690,7 +797,14 @@
 	int  tempVol = [[[gpnumText cell] title] floatValue];
 	if (addFlag) {
         if (m_ngzdw==0) {
-            tempVol = tempVol + 100;
+            if(eGetData.tradeType == XGSG)
+            {
+                tempVol = tempVol + xgsgMSGS;
+            }
+            else
+            {
+                tempVol = tempVol + 100;
+            }
         }
 		else if(m_ngzdw==1)
         {
@@ -703,7 +817,15 @@
 	}
 	else {
 		if (m_ngzdw==0) {
-            tempVol = tempVol -100;
+            
+            if(eGetData.tradeType == XGSG)
+            {
+                tempVol = tempVol - xgsgMSGS;
+            }
+            else
+            {
+                tempVol = tempVol -100;
+            }
         }
 		else if(m_ngzdw==1)
         {
@@ -746,6 +868,10 @@
     if(eGetData.tradeType == XJHK)
     {
         [self xjhkdoBuySell];
+    }
+    else if(eGetData.tradeType == XGSG)
+    {
+        [self xgsgdoBuySell];
     }
     else
     {
@@ -946,6 +1072,43 @@
 	if ([tempString length]>0) {
 		[[gddmCombobox cell] setTitle:tempString];
 	}
+    
+    if(eGetData.tradeType == XGSG)
+    {
+        if(eGetData.saveDate.arrayData != nil)
+        {
+            if(eGetData.saveDate.arrayData.count > 5)
+            {
+                [[gpnameLabel cell] setTitle:[eGetData.saveDate.arrayData objectAtIndex:0]];
+                [[sgjgLabel cell] setTitle:[eGetData.saveDate.arrayData objectAtIndex:2]];
+                [[sgxxLabel cell] setTitle:[eGetData.saveDate.arrayData objectAtIndex:3]];
+                xgsgMSGS = [[eGetData.saveDate.arrayData objectAtIndex:3] intValue];
+                
+                NSString* xgsx = [eGetData.saveDate.arrayData objectAtIndex:4];
+                NSString* zdks = [eGetData.saveDate.arrayData objectAtIndex:5];
+                [[sgsxLabel cell] setTitle:xgsx];
+                if(zdks.intValue < xgsx.intValue)
+                {
+                    [[maxbuysellLabel cell] setTitle:zdks];
+                }
+                else
+                {
+                    [[maxbuysellLabel cell] setTitle:xgsx];
+                }
+            }
+            eGetData.saveDate.arrayData = nil;
+        }
+        else
+        {
+            [[gpnameLabel cell] setTitle:@""];
+            [[sgjgLabel cell] setTitle:@""];
+            [[sgxxLabel cell] setTitle:@""];
+            xgsgMSGS = 100;
+            
+            [[sgsxLabel cell] setTitle:@""];
+        }
+
+    }
 	
 	eGetData.inputSave.gddm=[NSString stringWithFormat:@"%@",m_gdmx.gddm];
 	eGetData.inputSave.accoutType=m_gdmx.wttype;
@@ -998,10 +1161,12 @@
     [gpcodeText setFrame:NSMakeRect(70, viewRect.size.height  - 2*PERROWHEIGHT+MARIN_HEIGHT-TOPMARIN_HEIGHT, 70, PERROWHEIGHT-2*MARIN_HEIGHT)];
     [gddmCombobox setFrame:NSMakeRect(70,viewRect.size.height  - PERROWHEIGHT-TOPMARIN_HEIGHT, 140, PERROWHEIGHT)];
     
+    
     if (eGetData.tradeType == DBPHZ) {
         DBPHZView.hidden = NO;
         XQHQView.hidden = YES;
         XJHKView.hidden = YES;
+        XGSGView.hidden = YES;
         [DBPHZView addSubview:gddmCombobox];
         [DBPHZView addSubview:gpcodeText];
         [DBPHZView addSubview:numStepper];
@@ -1030,6 +1195,7 @@
         XQHQView.hidden = NO;
         DBPHZView.hidden = YES;
         XJHKView.hidden = YES;
+        XGSGView.hidden = YES;
         
         [XQHQView addSubview:gddmCombobox];
         [XQHQView addSubview:gpcodeText];
@@ -1052,12 +1218,48 @@
     }
     else if(eGetData.tradeType == XJHK)
     {
+        [bjfsCombobox removeFromSuperview];
+        
         XJHKView.hidden = NO;
         DBPHZView.hidden = YES;
         XQHQView.hidden = YES;
+        XGSGView.hidden = YES;
         myTableView.hidden = YES;
         scrollView.hidden = YES;
         [scrollView removeFromSuperview];
+        
+        return;
+    }
+    else if(eGetData.tradeType == XGSG)
+    {
+        XJHKView.hidden = NO;
+        DBPHZView.hidden = YES;
+        XQHQView.hidden = YES;
+        XGSGView.hidden = NO;
+        myTableView.hidden = YES;
+        scrollView.hidden = YES;
+        [scrollView removeFromSuperview];
+        
+        [XGSGView addSubview:gddmCombobox];
+        [XGSGView addSubview:gpcodeText];
+        
+        [XGSGView addSubview:numStepper];
+        [XGSGView addSubview:moneynumText];
+        [XGSGView addSubview:maxbuysellLabel];
+        [XGSGView addSubview:allnumButton];
+        [XGSGView addSubview:gpnumdwLabel];
+        [XGSGView addSubview:gpnumText];
+        [XGSGView addSubview:gpnumdwLabel2];
+        [XGSGView addSubview:gpnameLabel];
+        
+        [moneynumText setFrame:NSMakeRect(70, viewRect.size.height  - 6*PERROWHEIGHT+MARIN_HEIGHT-TOPMARIN_HEIGHT, 140, PERROWHEIGHT-2*MARIN_HEIGHT)];
+        [maxbuysellLabel setFrame:NSMakeRect(70, viewRect.size.height  - 7*PERROWHEIGHT+MARIN_HEIGHT-TOPMARIN_HEIGHT, 100, PERROWHEIGHT-2*MARIN_HEIGHT)];
+        [allnumButton setFrame:NSMakeRect(170, viewRect.size.height  - 7*PERROWHEIGHT+2-TOPMARIN_HEIGHT, 40, PERROWHEIGHT-4)];
+        [gpnumdwLabel setFrame:NSMakeRect(210, viewRect.size.height  - 7*PERROWHEIGHT-TOPMARIN_HEIGHT, 20, PERROWHEIGHT)];
+        [gpnumText setFrame:NSMakeRect(70, viewRect.size.height  - 8*PERROWHEIGHT-TOPMARIN_HEIGHT, 120, PERROWHEIGHT)];
+        [numStepper setFrame:NSMakeRect(190, viewRect.size.height  - 8*PERROWHEIGHT+2-TOPMARIN_HEIGHT, 20, PERROWHEIGHT-4)];
+        [gpnumdwLabel2 setFrame:NSMakeRect(210, viewRect.size.height  - 8*PERROWHEIGHT-TOPMARIN_HEIGHT, 20, PERROWHEIGHT)];
+        
         return;
     }
     else
@@ -1081,6 +1283,7 @@
         DBPHZView.hidden = YES;
         XQHQView.hidden = YES;
         XJHKView.hidden = YES;
+        XGSGView.hidden = YES;
         
         if (eGetData.tradeType == DBPHZ)
         {
@@ -1207,7 +1410,7 @@
 
 -(void)dealTitleS{ //处理买入卖出的页面差别
 	NSTextField * tempText;
-	if (self.tag == 0 || self.tag==2) { //买入
+	if (self.tag == 0 || self.tag==2 || self.tag == MQHQ || eGetData.tradeType == MQHQ) { //买入
 		tempText = (NSTextField *)[self viewWithTag:3+textFieldtag];
 		[[tempText cell] setTextColor:[NSColor redColor]];
 		[[tempText cell] setTitle: (m_bolhg?(m_bzyck?@"出库价格:":@"融资价格:"):@"买入价格:")];
@@ -1409,6 +1612,20 @@
             [eGetData sendTradeWTData:TDX_KMMS objIndex:self.tradeindex Session:eGetData.inputSave.sessionID gpCode:[[gpcodeText cell] title] gpPrice:(m_bsjwtflag?@"1.000":[[gppriceText cell] title]) gpNum:nwtfs bsFlag:bsFlag kyzj:[[[moneynumText cell] title] floatValue]];
         }
 	}
+    else if(eGetData.tradeType == DBPHZ){//担保品划转查最大可划
+        
+        eGetData.inputSave.wtfs=@"7";
+        m_strMRMCFlag = @"74";
+        [eGetData sendTradeWTData:TDX_DBPHZ+1 objIndex:self.tradeindex Session:eGetData.inputSave.sessionID gpCode:[[gpcodeText cell] title] gpPrice:(m_bsjwtflag?@"1.000":[[gppriceText cell] title]) gpNum:1 bsFlag:m_strMRMCFlag kyzj:[[[moneynumText cell] title] floatValue]];
+    }
+#ifdef IMAC_SXZQ
+    else if(eGetData.tradeType == RZBuy || eGetData.tradeType == RZSell || eGetData.tradeType == XQHQ || eGetData.tradeType == MQHQ)
+    {
+        [self getMRMCFlag];
+        
+        [eGetData sendTradeWTData:TDX_KMMS objIndex:self.tradeindex Session:eGetData.inputSave.sessionID gpCode:[[gpcodeText cell] title] gpPrice:(m_bsjwtflag?@"1.000":[[gppriceText cell] title]) gpNum:nwtfs bsFlag:m_strMRMCFlag kyzj:[[[moneynumText cell] title] floatValue]];
+    }
+#endif
 	else if(m_gdmx)//卖出
 	{
 		if(lastmaxzqdm!=nil)
@@ -1418,12 +1635,6 @@
 		}
 		[eGetData sendTradeQueryData:TDX_GFCX objIndex:self.tradeindex Session:eGetData.inputSave.sessionID];
 	}
-    else if(eGetData.tradeType == DBPHZ){//担保品划转查最大可划
-    
-            eGetData.inputSave.wtfs=@"7";
-            m_strMRMCFlag = @"74";
-          [eGetData sendTradeWTData:TDX_DBPHZ+1 objIndex:self.tradeindex Session:eGetData.inputSave.sessionID gpCode:[[gpcodeText cell] title] gpPrice:(m_bsjwtflag?@"1.000":[[gppriceText cell] title]) gpNum:1 bsFlag:m_strMRMCFlag kyzj:[[[moneynumText cell] title] floatValue]];
-    }
 	else
 		[[maxbuysellLabel cell] setTitle:@"0"];
 	
@@ -1461,6 +1672,12 @@
     }
     else if (eGetData.tradeType == MQHK){
         m_strMRMCFlag = 76;
+    }
+    else if (eGetData.tradeType == XQHQ){
+        m_strMRMCFlag = 73;
+    }
+    else if (eGetData.tradeType == MQHQ){
+        m_strMRMCFlag = 71;
     }
 }
 
@@ -1734,6 +1951,34 @@
     return;
 }
 
+-(void)xgsgdoBuySell
+{
+    if([[[gpnumText cell] title] intValue] <= 0)
+    {
+        NSAlert* alert = [NSAlert alertWithMessageText:@"提示"
+                                         defaultButton: @"确定"
+                                       alternateButton: nil
+                                           otherButton: nil
+                             informativeTextWithFormat: @"请输入申购数量"];
+        [alert setDelegate:self];
+        NSInteger result = [alert runModal];
+        [self handleResult:alert withResult:result withTag:1];
+        return;
+    }
+    
+    NSString* tempString = [NSString stringWithFormat:@"请确认以下信息:\r\r操作类别:   %@\r股票代码:   %@ %@\r申购价格:   %@ %@\r申购数量:   %@ %@\r",@"新股申购",[[gpcodeText cell] title],[[gpnameLabel cell] title], [[sgjgLabel cell] title],@"元",[[gpnumText cell] title],@"股"];
+    
+    NSAlert* alert = [NSAlert alertWithMessageText:@"交易确认"
+                                     defaultButton: @"确定"
+                                   alternateButton: @"取消"
+                                       otherButton: nil
+                         informativeTextWithFormat: @"%@",tempString];
+    [alert setDelegate:self];
+    NSInteger result = [alert runModal];
+    [self handleResult:alert withResult:result withTag:0];
+    return;
+}
+
 -(void)doBuySell2
 {
 	int bsFlag=0;
@@ -1771,12 +2016,26 @@
              [eGetData sendTradeWTData:TDX_DBPHZ objIndex:self.tradeindex Session:eGetData.inputSave.sessionID gpCode:[[gpcodeText cell] title] gpPrice:((m_bzyck || m_bzyrk || m_bsjwtflag)?@"1.000":[[gppriceText cell] title] ) gpNum:([[[gpnumText cell] title] intValue]*((m_ngzdw==1)?10:1)) bsFlag:m_strMRMCFlag zqflag:(m_bolzq || m_bolhg) wtfs:m_nsjfsindex];
         }else{
             [self getMRMCFlag];
-            [eGetData sendTradeWTData:TDX_WTJY objIndex:self.tradeindex Session:eGetData.inputSave.sessionID gpCode:[[gpcodeText cell] title] gpPrice:((m_bzyck || m_bzyrk || m_bsjwtflag)?@"1.000":[[gppriceText cell] title] ) gpNum:([[[gpnumText cell] title] intValue]*((m_ngzdw==1)?10:1)) bsFlag:m_strMRMCFlag zqflag:(m_bolzq || m_bolhg) wtfs:m_nsjfsindex];
+            if (eGetData.tradeType==XGSG)
+            {
+                [eGetData sendTradeWTData:TDX_WTJY objIndex:self.tradeindex Session:eGetData.inputSave.sessionID gpCode:[[gpcodeText cell] title] gpPrice:((m_bzyck || m_bzyrk || m_bsjwtflag)?@"1.000":[[sgjgLabel cell] title] ) gpNum:([[[gpnumText cell] title] intValue]*((m_ngzdw==1)?10:1)) bsFlag:0 zqflag:(m_bolzq || m_bolhg) wtfs:nwtfs];
+            }
+            else
+            {
+                [eGetData sendTradeWTData:TDX_WTJY objIndex:self.tradeindex Session:eGetData.inputSave.sessionID gpCode:[[gpcodeText cell] title] gpPrice:((m_bzyck || m_bzyrk || m_bsjwtflag)?@"1.000":[[gppriceText cell] title] ) gpNum:([[[gpnumText cell] title] intValue]*((m_ngzdw==1)?10:1)) bsFlag:m_strMRMCFlag zqflag:(m_bolzq || m_bolhg) wtfs:m_nsjfsindex];
+            }
         }
     }
     else
     {
-        [eGetData sendTradeWTData:TDX_WTJY objIndex:self.tradeindex Session:eGetData.inputSave.sessionID gpCode:[[gpcodeText cell] title] gpPrice:((m_bzyck || m_bzyrk || m_bsjwtflag)?@"1.000":[[gppriceText cell] title] ) gpNum:([[[gpnumText cell] title] intValue]*((m_ngzdw==1)?10:1)) bsFlag:bsFlag zqflag:(m_bolzq || m_bolhg) wtfs:nwtfs];
+        if (eGetData.tradeType==XGSG)
+        {
+            [eGetData sendTradeWTData:TDX_WTJY objIndex:self.tradeindex Session:eGetData.inputSave.sessionID gpCode:[[gpcodeText cell] title] gpPrice:((m_bzyck || m_bzyrk || m_bsjwtflag)?@"1.000":[[sgjgLabel cell] title] ) gpNum:([[[gpnumText cell] title] intValue]*((m_ngzdw==1)?10:1)) bsFlag:0 zqflag:(m_bolzq || m_bolhg) wtfs:nwtfs];
+        }
+        else
+        {
+            [eGetData sendTradeWTData:TDX_WTJY objIndex:self.tradeindex Session:eGetData.inputSave.sessionID gpCode:[[gpcodeText cell] title] gpPrice:((m_bzyck || m_bzyrk || m_bsjwtflag)?@"1.000":[[gppriceText cell] title] ) gpNum:([[[gpnumText cell] title] intValue]*((m_ngzdw==1)?10:1)) bsFlag:bsFlag zqflag:(m_bolzq || m_bolhg) wtfs:nwtfs];
+        }
     }
  
 }
@@ -1836,6 +2095,30 @@
     }
 }
 
+-(void)getDBPHZGDDMData
+{
+    NSString* ptgd = @"";
+    if(eGetData.gddmDBPHZ.count > 1)
+    {
+
+        for(NSMutableDictionary* dict in eGetData.gddmDBPHZ)
+        {
+            NSString* zhlbStr = [dict objectForKey:@"zhlb"];
+            [eGetData.DBPHZGDDMArray addObject:[NSString stringWithFormat:@"%@ %@",[self GetGDTypeStr:[zhlbStr intValue]],[dict objectForKey:@"gddm"]]];
+        }
+        
+    }
+    
+    if(eGetData.DBPHZGDDMArray.count > 1)
+    {
+        ptgd = [eGetData.DBPHZGDDMArray objectAtIndex:0];
+        eGetData.saveDate.DBPHZ_xw = [[eGetData.gddmDBPHZ objectAtIndex:0] objectForKey:@"xw"];
+    }
+    
+    
+    [[PTgddmCombobox cell]setTitle: ptgd];
+}
+
 -(BOOL)OnReceiveData:(int)reqIndex parser:(id)pParse
 {
 	ParseRecv *pParsers=(ParseRecv *)pParse;
@@ -1855,7 +2138,10 @@
 			if(pParsers.bsucflag)
 			{
                 m_bOnlyRunOne = YES;
-				[[gpnameLabel cell] setTitle:[pParsers getFieldData:0 fieldFlag:TDX_ID_ZQMC]];
+                if(eGetData.tradeType != XGSG)
+                {
+                    [[gpnameLabel cell] setTitle:[pParsers getFieldData:0 fieldFlag:TDX_ID_ZQMC]];
+                }
 				NSString *strkyzj=[pParsers getFieldData:0 fieldFlag:TDX_ID_KYZJ];
                 if([strkyzj length])
                     [[moneynumText cell] setTitle:strkyzj];
@@ -2059,7 +2345,11 @@
 				[[maxbuysellLabel cell] setTitle:[pParsers getFieldData:0 fieldFlag:TDX_ID_KMSL]];
             }
 			if([[[maxbuysellLabel cell] title] length]==0)
-				[[maxbuysellLabel cell] setTitle:@"0"];
+            {
+                [[maxbuysellLabel cell] setTitle:@"0"];
+                return 0;
+            }
+				
             
             if(eGetData.tradeType == DBPBuy)
             {
@@ -2087,9 +2377,7 @@
                 }
             }
             
-            NSString *maxNum = [[maxbuysellLabel cell] title];
-            if([maxNum isEqualToString:@""]
-               || [maxNum intValue] == 0)
+            if(eGetData.tradeType != XGSG)
             {
                 [[maxbuysellLabel cell] setTitle:[eGetData GetKmsl:pParsers zqdm:[[gpcodeText cell]title] gddm:m_gdmx.gddm xwdm:m_gdmx.xwdm zjzh:m_gdmx.zjzh]];
             }
@@ -2146,9 +2434,11 @@
 			[self stopanimate];
 		}
 			break;
-               case TDX_DBPHZ+1:
+        case TDX_DBPHZ+1:
             if(pParsers.bsucflag)
-             [[maxbuysellLabel cell] setTitle:[pParsers getFieldData:0 fieldFlag:TDX_ID_KMSL]];
+            {
+                [[maxbuysellLabel cell] setTitle:[pParsers getFieldData:0 fieldFlag:TDX_ID_KMSL]];
+            }
             break;
         case TDX_XYXJHKCX:
         {
@@ -2230,6 +2520,10 @@
     else if (aComboBox == HZFXCombobox){
         return 2;
     }
+    else if(aComboBox.tag == PTGDDM_COM_FLAG)
+    {
+        return [eGetData.DBPHZGDDMArray count];
+    }
 	
 	return 0;
 }
@@ -2245,6 +2539,10 @@
 		else if(m_setcode==SH)
 			return [m_shsjwtfsmc objectAtIndex:index];
 	}
+    else if(aComboBox.tag == PTGDDM_COM_FLAG)
+    {
+        return [eGetData.DBPHZGDDMArray objectAtIndex:index];
+    }
     else if (aComboBox == HZFXCombobox){
         return [HZFXArray objectAtIndex:index];
     }
@@ -2305,6 +2603,16 @@
 		}
         [self OnGpMaxBuySell];
 	}
+    else if([tempCombobox tag] == PTGDDM_COM_FLAG)
+    {
+        int tempInt = [tempCombobox indexOfSelectedItem];
+        if(eGetData.gddmDBPHZ.count > 1)
+        {
+            eGetData.saveDate.DBPHZ_ptgddm = [[eGetData.gddmDBPHZ objectAtIndex:tempInt] objectForKey:@"gddm"];
+            eGetData.saveDate.DBPHZ_xw = [[eGetData.gddmDBPHZ objectAtIndex:tempInt] objectForKey:@"xw"];
+            eGetData.saveDate.DBPHZ_zhlb = [[eGetData.gddmDBPHZ objectAtIndex:tempInt] objectForKey:@"zhlb"];
+        }
+    }
     else if (tempCombobox == HZFXCombobox){
         int tempInt = [tempCombobox indexOfSelectedItem];
         eGetData.HZFX = tempInt;
@@ -2383,7 +2691,13 @@
 		CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
 		CGContextSetAllowsAntialiasing(context, FALSE);
 		[[NSColor grayColor] set];
-		CGContextAddRect(context, CGRectMake(gddmCombobox.frame.origin.x+gddmCombobox.frame.size.width+18, gddmCombobox.frame.origin.y+TOPMARIN_HEIGHT-213, dirtyRect.size.width-WT_WIDTH-2, 11*PERROWHEIGHT_PK-2*TOPMARIN_HEIGHT));
+        float ySize = gddmCombobox.frame.origin.y+TOPMARIN_HEIGHT-213;
+        if(eGetData.tradeType == DBPHZ)
+        {
+            ySize = ySize +25;
+        }
+        
+		CGContextAddRect(context, CGRectMake(gddmCombobox.frame.origin.x+gddmCombobox.frame.size.width+18, ySize, dirtyRect.size.width-WT_WIDTH-2, 11*PERROWHEIGHT_PK-2*TOPMARIN_HEIGHT));
 		
 		CGContextStrokePath(context);
 		CGContextSetAllowsAntialiasing(context, TRUE);

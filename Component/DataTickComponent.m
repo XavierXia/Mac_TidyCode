@@ -30,23 +30,20 @@
 		self.showFlag = FALSE;
 		
 		NSRect tableFrame;
-		tableFrame.origin.x = 0;
-		tableFrame.origin.y = 0;
-		tableFrame.size.width = aRect.size.width-2;
-		tableFrame.size.height = aRect.size.height-2;
+		tableFrame.origin.x = 1;
+		tableFrame.origin.y = 1;
+		tableFrame.size.width = aRect.size.width;
+		tableFrame.size.height = aRect.size.height;
 		
 		
-		tableContainer = [[NSScrollView alloc] initWithFrame:NSMakeRect(1, 1, aRect.size.width-2, aRect.size.height-2)];
-        [tableContainer setBackgroundColor:[NSColor blackColor]];
-        [tableContainer.contentView setBackgroundColor:[NSColor blackColor]];
-        
+		
 		myTableView = [[NSTableView alloc] initWithFrame:tableFrame];
 		[myTableView setHeaderView:nil];
 		
-		[myTableView setBackgroundColor:[NSColor blackColor]];
+		[myTableView setBackgroundColor:[NSColor clearColor]];
 		[myTableView setGridColor:[NSColor lightGrayColor]];
 		[myTableView setAutosaveTableColumns:NO];
-		[myTableView setAllowsEmptySelection:NO];
+		[myTableView setAllowsEmptySelection:YES];
 		[myTableView setAllowsColumnSelection:NO];
 		[myTableView setAllowsColumnReordering:NO];
 		[myTableView setAllowsColumnResizing:NO];
@@ -54,20 +51,17 @@
 		[myTableView enclosingScrollView];
 		[myTableView setFocusRingType:1];
 		[myTableView setAction:@selector(singleClick:)];
-        
-        [self addColumn:@"time" withTitle:@"" withWidth:45];
+		
+		[self addColumn:@"time" withTitle:@"" withWidth:40];
 		[self addColumn:@"price" withTitle:@"" withWidth:80];
 		[self addColumn:@"vol" withTitle:@"" withWidth:60];
 		[self addColumn:@"flag" withTitle:@"" withWidth:30];
-		
-        [myTableView setDataSource:self];
+		[myTableView setDataSource:self];
 		[myTableView setDelegate:self];
 		
+		[self addSubview:myTableView];
 	
-        [tableContainer setDocumentView:myTableView];
-        [tableContainer setHasVerticalScroller:NO];
-        [tableContainer setHasHorizontalScroller:NO];
-        [self addSubview:tableContainer];
+
     }
     return self;
 }
@@ -75,18 +69,16 @@
 -(void) setFrame:(NSRect)aRect{
 	[super setFrame:aRect];
 	NSRect tableFrame;
-	tableFrame.origin.x = 0;
-	tableFrame.origin.y = 0;
-	tableFrame.size.width = aRect.size.width-2;
-	tableFrame.size.height = aRect.size.height-2;
+	tableFrame.origin.x = 1;
+	tableFrame.origin.y = 1;
+	tableFrame.size.width = aRect.size.width;
+	tableFrame.size.height = aRect.size.height;
 	
-    tableContainer.frame=NSMakeRect(1, 1, aRect.size.width-2, aRect.size.height-2);
+
     [myTableView setFrame:tableFrame];
 	
 	
 	showNum = (aRect.size.height-22) / PERROWHEIGHT;
-    if(showNum*PERROWHEIGHT+10>(aRect.size.height-22))
-        showNum--;
 	if (showNum <= 0) {
 		showNum = 1;
 	}
@@ -205,7 +197,7 @@
 -(void)doubleClick:(id)sender{
 }
 
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row;
 
 {
 	if (!self.showFlag) {

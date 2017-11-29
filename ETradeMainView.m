@@ -14,7 +14,7 @@
 #define LEFTMARIN_WIDTH 5
 
 @implementation ETradeMainView
-@synthesize funcList,bodyView,tradeDelegate,m_lockscreen,reconObject;
+@synthesize funcList,bodyView,tradeDelegate,m_lockscreen,reconObject,m_DBPHZlockscreen;
 
 
 - (id)initWithFrame:(NSRect)frame {
@@ -44,6 +44,8 @@
 		
 		bodyView = [[ETradeBodyView alloc] initWithData:NSMakeRect(FUNCLIST_WIDTH, 0, frame.size.width-FUNCLIST_WIDTH, frame.size.height-FUNCBAR_HEIGHT) theData:eGetData];
 		[self addSubview:bodyView];
+        
+        m_DBPHZlockscreen = [[DBPHZLockScreen alloc] initWithData:NSMakeRect(FUNCLIST_WIDTH, 0, frame.size.width-FUNCLIST_WIDTH, frame.size.height) theData:_eGetData];
 		
 		
 		m_lockscreen = [[LockScreen alloc] initWithData:NSMakeRect(0, 0, frame.size.width, frame.size.height) theData:_eGetData];
@@ -54,7 +56,7 @@
 		[titleText setEditable:NO];
 		[titleText setBackgroundColor:[NSColor clearColor]];
 		[titleText setBordered:NO];
-		[titleText setFrame:NSMakeRect(FUNCLIST_WIDTH+(frame.size.width- FUNCLIST_WIDTH)/2 -40, frame.size.height-FUNCBAR_HEIGHT, 80, FUNCBAR_HEIGHT-10)];
+		[titleText setFrame:NSMakeRect(FUNCLIST_WIDTH+(frame.size.width- FUNCLIST_WIDTH)/2 -40, frame.size.height-FUNCBAR_HEIGHT, 120, FUNCBAR_HEIGHT-10)];
 	
         [[titleText cell] setTextColor:[NSColor blackColor]];
 		[self addSubview:titleText];
@@ -168,6 +170,8 @@
 		[closeButton setFrame:NSMakeRect(frame.size.width - 40, frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
 		[self addSubview:closeButton];
         
+
+#ifdef IMAC_GDZQ
         changeSizeButton = [[NSButton alloc] init];
         [changeSizeButton setBezelStyle:12];
         [[changeSizeButton cell] setTitle:@"放大"];
@@ -196,6 +200,28 @@
 		[lockButton setAction:@selector(lockButtonClick)];
 		[lockButton setFrame:NSMakeRect(frame.size.width - 40-40-40-40, frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
 		[self addSubview:lockButton];
+#else
+        minButton= [[NSButton alloc] init];
+        [minButton setBezelStyle:12];
+        [[minButton cell] setTitle:@"隐藏"];
+        [[minButton cell] setBackgroundColor:[NSColor clearColor]];
+        [minButton setTarget:self];
+        [minButton setAction:@selector(minButtonClick)];
+        [minButton setFrame:NSMakeRect(frame.size.width -40-40, frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
+        [self addSubview:minButton];
+        
+        
+        lockButton = [[NSButton alloc] init];
+        [lockButton setBezelStyle:12];
+        [[lockButton cell] setTitle:@"锁定"];
+        
+        [[lockButton cell] setBackgroundColor:[NSColor clearColor]];
+        [lockButton setTarget:self];
+        [lockButton setAction:@selector(lockButtonClick)];
+        [lockButton setFrame:NSMakeRect(frame.size.width -40-40-40, frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
+        [self addSubview:lockButton];
+        
+#endif
 		
 	}
 	return self;
@@ -215,10 +241,11 @@
     
 	[funcList setFrame:NSMakeRect(0, 0, FUNCLIST_WIDTH, frame.size.height)];
 	[bodyView setFrame:NSMakeRect(FUNCLIST_WIDTH+3, 0, frame.size.width-FUNCLIST_WIDTH-3, frame.size.height-FUNCBAR_HEIGHT-2)];
-    //[bodyView setFrame:NSMakeRect(FUNCLIST_WIDTH+3, 0, frame.size.width-FUNCLIST_WIDTH-3, frame.size.height)];
+    [m_DBPHZlockscreen setFrame:NSMakeRect(FUNCLIST_WIDTH+3, 0, frame.size.width-FUNCLIST_WIDTH-3, frame.size.height-FUNCBAR_HEIGHT-2)];
+    
 	[m_lockscreen setFrame:NSMakeRect(0, 0, frame.size.width, frame.size.height)];
 	
-	[titleText setFrame:NSMakeRect(LEFTMARIN_WIDTH+FUNCLIST_WIDTH+(frame.size.width- FUNCLIST_WIDTH)/2 -40, frame.size.height-FUNCBAR_HEIGHT, 80, FUNCBAR_HEIGHT-10)];
+	[titleText setFrame:NSMakeRect(LEFTMARIN_WIDTH+FUNCLIST_WIDTH+(frame.size.width- FUNCLIST_WIDTH)/2 -40, frame.size.height-FUNCBAR_HEIGHT, 120, FUNCBAR_HEIGHT-10)];
 	[buyButton setFrame:NSMakeRect(LEFTMARIN_WIDTH+FUNCLIST_WIDTH, frame.size.height-FUNCBAR_HEIGHT+10, 40 + xyWidth/2, FUNCBAR_HEIGHT-20)];
 	[sellButton setFrame:NSMakeRect(LEFTMARIN_WIDTH+FUNCLIST_WIDTH+1*(40+SEPARATE_WIDTH)+xyWidth/2, frame.size.height-FUNCBAR_HEIGHT+10, 40+xyWidth/2, FUNCBAR_HEIGHT-20)];
     [RZbuyButton setFrame:NSMakeRect(LEFTMARIN_WIDTH+FUNCLIST_WIDTH+2*(40+SEPARATE_WIDTH)+xyWidth, frame.size.height-FUNCBAR_HEIGHT+10, xyWidth, FUNCBAR_HEIGHT-20)];
@@ -229,15 +256,21 @@
 	[refreshButton setFrame:NSMakeRect(LEFTMARIN_WIDTH+FUNCLIST_WIDTH+5*(40+SEPARATE_WIDTH)+ xyWidth+xyWidth*2 +margin, frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
 	[transferButton setFrame:NSMakeRect(LEFTMARIN_WIDTH+FUNCLIST_WIDTH+6*(40+SEPARATE_WIDTH)+ xyWidth+xyWidth*2 +margin, frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
 	[closeButton setFrame:NSMakeRect(frame.size.width-RIGHTMARIN_WIDTH - (40+SEPARATE_WIDTH), frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
+    
+#ifdef IMAC_GDZQ
     [changeSizeButton setFrame:NSMakeRect(frame.size.width-RIGHTMARIN_WIDTH - 2*(40+SEPARATE_WIDTH), frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
-	[minButton setFrame:NSMakeRect(frame.size.width -RIGHTMARIN_WIDTH- 3*(40+SEPARATE_WIDTH), frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
-	[lockButton setFrame:NSMakeRect(frame.size.width-RIGHTMARIN_WIDTH - 4*(40+SEPARATE_WIDTH), frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
+    [minButton setFrame:NSMakeRect(frame.size.width -RIGHTMARIN_WIDTH- 3*(40+SEPARATE_WIDTH), frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
+    [lockButton setFrame:NSMakeRect(frame.size.width-RIGHTMARIN_WIDTH - 4*(40+SEPARATE_WIDTH), frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
+#else
+    [minButton setFrame:NSMakeRect(frame.size.width -RIGHTMARIN_WIDTH- 2*(40+SEPARATE_WIDTH), frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
+    [lockButton setFrame:NSMakeRect(frame.size.width-RIGHTMARIN_WIDTH - 3*(40+SEPARATE_WIDTH), frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
+#endif
     
     float fright=transferButton.frame.origin.x+transferButton.frame.size.width+10;
     
     float fleft=LEFTMARIN_WIDTH+FUNCLIST_WIDTH+(frame.size.width- FUNCLIST_WIDTH)/2 -40;
     if(fleft>fright )
-        [titleText setFrame:NSMakeRect(fleft, frame.size.height-FUNCBAR_HEIGHT, 80, FUNCBAR_HEIGHT-10)];
+        [titleText setFrame:NSMakeRect(fleft, frame.size.height-FUNCBAR_HEIGHT, 120, FUNCBAR_HEIGHT-10)];
     else
         [titleText setFrame:NSMakeRect(0.0, 0.0, 0.0, 0.0)];
     
@@ -247,6 +280,7 @@
     else
         [closeButton setFrame:NSMakeRect(0.0, 0.0, 0.0, 0.0)];
     
+#ifdef GDZQ
     fleft=frame.size.width-RIGHTMARIN_WIDTH - 2*(40+SEPARATE_WIDTH);
     if(fleft>fright)
         [changeSizeButton setFrame:NSMakeRect(fleft, frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
@@ -264,6 +298,19 @@
         [lockButton setFrame:NSMakeRect(fleft, frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
     else
         [lockButton setFrame:NSMakeRect(0.0, 0.0, 0.0, 0.0)];
+#else
+    fleft=frame.size.width -RIGHTMARIN_WIDTH- 2*(40+SEPARATE_WIDTH);
+    if(fleft>fright)
+        [minButton setFrame:NSMakeRect(fleft, frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
+    else
+        [minButton setFrame:NSMakeRect(0.0, 0.0, 0.0, 0.0)];
+    
+    fleft=frame.size.width-RIGHTMARIN_WIDTH - 3*(40+SEPARATE_WIDTH);
+    if(fleft>fright)
+        [lockButton setFrame:NSMakeRect(fleft, frame.size.height-FUNCBAR_HEIGHT+10, 40, FUNCBAR_HEIGHT-20)];
+    else
+        [lockButton setFrame:NSMakeRect(0.0, 0.0, 0.0, 0.0)];
+#endif
 }
 
 -(void)lockButtonClick{
@@ -496,6 +543,9 @@
                 [[titleText cell] setTitle:@"现券还券"];
 
             }
+            else if (_para == XGSG){
+                [[titleText cell] setTitle:@"新股申购"];
+            }
 
 			break;
 		case MAC_TRADE_FUNC:
@@ -530,11 +580,20 @@
 			else if (_para == TDX_ZJLS){
 				[[titleText cell] setTitle:@"资金流水"];
 			}
-			else if (_para == TDX_PHCX){
-				[[titleText cell] setTitle:@"配号查询"];
-			}
+            else if (_para == TDX_XGSG){
+                [[titleText cell] setTitle:@"新股申购"];
+            }
+            else if (_para == TDX_KSGXGCX){
+                [[titleText cell] setTitle:@"可申购新股查询"];
+            }
+            else if (_para == TDX_PHCX){
+                [[titleText cell] setTitle:@"配号查询"];
+            }
+            else if (_para == TDX_XGZQCX){
+                [[titleText cell] setTitle:@"中签查询"];
+            }
             else if (_para == TDX_IPOSGED){
-				[[titleText cell] setTitle:@"新股申购额度"];
+				[[titleText cell] setTitle:@"新股申购额度查询"];
 			}
 			else if (_para == TDX_GDCX){
 				[[titleText cell] setTitle:@"股东查询"];
@@ -542,6 +601,7 @@
             else if (_para == TDX_XYBDZQCX){
                 [[titleText cell] setTitle:@"标的证券查询"];
             }
+
             else if (_para == TDX_XYDBPZQCX){
                 [[titleText cell] setTitle:@"担保品证券查询"];
             }
@@ -555,27 +615,23 @@
                 [[titleText cell] setTitle:@"信用融券合约查询"];
             }
             else if (_para == TDX_XYRZHYCX){
-                [[titleText cell] setTitle:@"信用融资合约查询"];
+                [[titleText cell] setTitle:@"信用合约查询"];
             }
             else if (_para == TDX_XYZCCX){
                 [[titleText cell] setTitle:@"信用资产查询"];
             }
-            else if (_para == TDX_XGSG){ //新股申购
-                [[titleText cell] setTitle:@"新股申购"];
+            else if(_para == TDX_DBPHZCD){
+                [[titleText cell] setTitle:@"担保品划转撤单"];
             }
-            else if (_para == TDX_XGSGDJKCX){
-                [[titleText cell] setTitle:@"待缴款查询"];
+            else if(_para == TDX_DBPHZCX){
+                [[titleText cell] setTitle:@"担保品划转查询"];
             }
-            else if(_para == TDX_XGZQCX)
-            {
-                [[titleText cell] setTitle:@"中签查询"];
-            }
-            else if (_para == TDX_IPOSGED){
-                [[titleText cell] setTitle:@"新股申购额度"];
-            }
+//            else if(_para == TDX_DBPHZCD){
+//                [[titleText cell] setTitle:@"信用资产查询"];
+//            }
 			break;
 		case MAC_CANCEL_FUNC:
-			if (_para == TDX_CDCX || _para == TDX_DBPHZCDCX) {
+			if (_para == TDX_CDCX || _para == TDX_DBPHZCD) {
 				[self resetAllButton];
 				[cancelButton setState:NSOnState];
 				NSDictionary * attrsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSColor blueColor],NSForegroundColorAttributeName,tempStyle,NSParagraphStyleAttributeName,nil];
@@ -598,7 +654,7 @@
 				[transferButton setAttributedTitle:attrString];
 				[attrString release];
 			}
-			else if (_para == TDX_YECX){
+			else if (_para == TDX_YHYE){
 				[[titleText cell] setTitle:@"银行余额"];
 			}
 			else if (_para == TDX_ZZCX){
@@ -677,6 +733,27 @@
 	[m_lockscreen removeFromSuperview];
 	[self addSubview:funcList];
 	[self addSubview:bodyView];
+}
+
+#pragma mark 担保品划转锁屏相关
+-(BOOL)DBPHZshowlockscreen
+{
+    if(eGetData.clientinfos.m_DBPHZblocking==NO)
+    {
+        return NO;
+    }
+    [bodyView removeFromSuperview];
+    [self addSubview:m_DBPHZlockscreen];
+    [m_DBPHZlockscreen onviewWillAppear];
+    
+    return YES;
+}
+
+-(void)DBPHZunlockscreen
+{
+    [m_DBPHZlockscreen removeFromSuperview];
+    [self addSubview:bodyView];
+    
 }
 
 @end

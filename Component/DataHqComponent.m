@@ -68,7 +68,7 @@
 		
 		[self addColumn:@"name" withTitle:@"" withWidth:70];
 		[self addColumn:@"price" withTitle:@"" withWidth:60];
-		[self addColumn:@"vol" withTitle:@"" withWidth:70];
+		[self addColumn:@"vol" withTitle:@"" withWidth:75];
 		[myTableView setDataSource:self];
 		[myTableView setDelegate:self];
 		[self addSubview:myTableView];
@@ -750,21 +750,15 @@
 			[tempString drawInRect:tempRect withAttributes:tempAttributes];
 			
 			//股本
-			if (currInfo.J_zgb >= 1000000) {
+			if (currInfo.J_zgb > 1000000) {
 				tempString = [NSString stringWithFormat:@"%.0f亿",currInfo.J_zgb/10000];
 			}
-			else if ((currInfo.J_zgb < 1000000)&&(currInfo.J_zgb >= 100000)){
+			else if ((currInfo.J_zgb < 1000000)&&(currInfo.J_zgb > 100000)){
 				tempString = [NSString stringWithFormat:@"%.1f亿",currInfo.J_zgb/10000];
 			}
-			else if ((currInfo.J_zgb < 100000)&&(currInfo.J_zgb >= 10000)){
+			else if ((currInfo.J_zgb < 100000)&&(currInfo.J_zgb > 10000)){
 				tempString = [NSString stringWithFormat:@"%.2f亿",currInfo.J_zgb/10000];
 			}
-            else if ((currInfo.J_zgb < 10000)&&(currInfo.J_zgb >= 1000)){
-                tempString = [NSString stringWithFormat:@"%.1f千万",currInfo.J_zgb/1000];
-            }
-            else if ((currInfo.J_zgb < 1000)&&(currInfo.J_zgb >= 100)){
-                tempString = [NSString stringWithFormat:@"%.1f百万",currInfo.J_zgb/1000];
-            }
 			else {
 				tempString = [NSString stringWithFormat:@"%.0f万",currInfo.J_zgb];
 			}

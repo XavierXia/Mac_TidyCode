@@ -140,12 +140,12 @@
 	if (toolbarShowFlag) {
 		[barView setFrame:NSMakeRect(0, viewRect.size.height-BARVIEW_HEIGHT, viewRect.size.width, BARVIEW_HEIGHT)];
 		[scrollView setFrame:NSMakeRect(0, 0, viewRect.size.width, viewRect.size.height-BARVIEW_HEIGHT)];
-		[myTableView setFrame:NSMakeRect(0, 0, viewRect.size.width+300, viewRect.size.height-BARVIEW_HEIGHT)];
+		[myTableView setFrame:NSMakeRect(0, 0, viewRect.size.width, viewRect.size.height-BARVIEW_HEIGHT)];
 	}
 	else {
 		[barView setFrame:NSZeroRect];
 		[scrollView setFrame:NSMakeRect(0, 0, viewRect.size.width, viewRect.size.height)];
-		[myTableView setFrame:NSMakeRect(0, 0, viewRect.size.width+300, viewRect.size.height)];
+		[myTableView setFrame:NSMakeRect(0, 0, viewRect.size.width, viewRect.size.height)];
 	}
 	
 	[barView setShowType:[self GetQueryindexFromTag]];
@@ -370,7 +370,7 @@
             }
             else
             {
-                queryindex=TDX_DBPHZCDCX;
+                queryindex=TDX_DBPHZCD;
             }
         }
 	}
@@ -753,7 +753,7 @@
 	NSArray * tempArray = [showDataArray objectAtIndex:ncindex];
 	NSString * tempString=@"" ;
 	int queryindex=[self GetQueryindexFromTag];
-	if(queryindex==TDX_CDCX || queryindex==TDX_DRWT || queryindex == TDX_DBPHZCDCX){
+	if(queryindex==TDX_CDCX || queryindex==TDX_DRWT || queryindex == TDX_DBPHZCD){
 		if ([[myTableView selectedRowIndexes] count] > 1) {
 			m_ncdflag=5;
 			multiSelectCount = [[myTableView selectedRowIndexes] count];
@@ -972,7 +972,7 @@
 {
 	pageIndex=0;
 	int queryindex=[self GetQueryindexFromTag];
-	if (queryindex == TDX_CDCX || queryindex == TDX_DBPHZCDCX) {
+	if (queryindex == TDX_CDCX || queryindex == TDX_DBPHZCD) {
 		[myTableView setAllowsMultipleSelection:YES];
 	}
 	else if(queryindex == TDX_DRWT) {

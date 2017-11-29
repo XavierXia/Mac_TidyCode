@@ -34,7 +34,7 @@ static char m_showconnerror = 1;
 @synthesize hourDiff,minuteDiff,dataSend ,dataRec,dataSend_3G,dataRec_3G,secondDiff,sysYMD,sortRefreshTime,showAlertFlag;
 @synthesize refreshdelegate,clickAlertFlag,hostTransferCount,b_yesterday,showMineFlag,currTitleString,currTimeString,njylockspan;
 @synthesize szStockNum,shStockNum,szStockRec,shStockRec,szStockArray,shStockArray,bakFunc,gpdmlInfo,initStockChainFlag;
-@synthesize yearDiff,monthDiff,dayDiff,bexitsysflag,m_nlastopertime,tradeType,HZFX;
+@synthesize yearDiff,monthDiff,dayDiff,bexitsysflag,m_nlastopertime,tradeType,HZFX,nyybsHT;
 
 -(id) initWithComm :(EComm *) theComm tradeComm:(ETradeComm *)theTradeComm{
 	if (self = [super init]) {
@@ -57,6 +57,7 @@ static char m_showconnerror = 1;
 		showMineFlag = YES;
 		initStockChainFlag = NO;
         self.HZFX = HRXY;
+        self.nyybsHT = 0;
         
 		g_pEComm = theComm;
 		g_TradeComm = theTradeComm;
@@ -76,6 +77,8 @@ static char m_showconnerror = 1;
 		jjcodeArray = [[NSMutableArray alloc] init];
 		fecxArray = [[NSMutableArray alloc] init];
 		lxfsArray = [[NSMutableArray alloc] init];
+        gddmDBPHZ = [[NSMutableArray alloc] init];
+        DBPHZGDDMArray= [[NSMutableArray alloc] init];
 		const char * pdyKey = [desKey UTF8String];
 		setKey(pdyKey, 0);
 		
@@ -106,7 +109,13 @@ static char m_showconnerror = 1;
 #ifdef IMAC_GDZQ
         m_bpcywflag=YES;
 #endif
+#ifdef IMAC_SXZQ
+        m_bpcywflag = YES;
+#endif
 #ifdef IMAC_TPY
+        m_bpcywflag=YES;
+#endif
+#ifdef IMAC_SXZQ
         m_bpcywflag=YES;
 #endif
 #ifdef IMAC_PAZQ
@@ -329,6 +338,8 @@ static char m_showconnerror = 1;
 	[dataCondition release];
 	[jjcodeArray release];
 	[fecxArray release];
+    [gddmDBPHZ release];
+    [DBPHZGDDMArray release];
 	//交易相关
 	
 	[clientinfos release];
@@ -3471,21 +3482,41 @@ static char m_showconnerror = 1;
 			ASYNC_SENDDATA_END_PAGE
 		}
 			break;
-        case TDX_DBPHZCDCX:
+        case TDX_DBPHZCD:
         {
             ASYNC_SENDDATA_START_PAGE
-            
+#ifdef IMAC_SXZQ
+            tempString = [NSString  stringWithFormat:@"FuncID=%i&",3260];
+            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+            tempString = @"F1207=P&";
+            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+
+#else
             tempString = [NSString  stringWithFormat:@"FuncID=%i&",3278];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
             tempString = @"F1207=P&";
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
             tempString = @"F110=WSWT&";
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+#endif
             ASYNC_SENDDATA_PAGE
             ASYNC_SENDDATA_END_PAGE
         }
             break;
-		case TDX_GFCX:
+        case TDX_DBPHZCX:
+        {
+            ASYNC_SENDDATA_START_PAGE
+
+            tempString = [NSString  stringWithFormat:@"FuncID=%i&",3278];
+            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+            tempString = @"F1207=P&";
+            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+
+            ASYNC_SENDDATA_PAGE
+            ASYNC_SENDDATA_END_PAGE
+        }
+            break;
+        case TDX_GFCX:
 		{
 			ASYNC_SENDDATA_START_PAGE
             int ngnid=502;
@@ -3507,7 +3538,7 @@ static char m_showconnerror = 1;
 
 			tempString = [NSString  stringWithFormat:@"FuncID=%i&",ngnid];
 			[newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
-			tempString = @"F110=0&F132=-1&";
+			tempString = @"F110=0&";
 			[newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
 			ASYNC_SENDDATA_PAGE
 			ASYNC_SENDDATA_END_PAGE
@@ -3586,7 +3617,7 @@ static char m_showconnerror = 1;
 			ASYNC_SENDDATA_PAGE
 			ASYNC_SENDDATA_END_PAGE
 		}
-			break;	
+			break;
 		case TDX_CJHZ:
 		{
 			ASYNC_SENDDATA_START_PAGE
@@ -3616,6 +3647,7 @@ static char m_showconnerror = 1;
 			ASYNC_SENDDATA_END_PAGE
 		}
 			break;
+        case TDX_KSGXGCX:
         case TDX_XGSG:
         {
             ASYNC_SENDDATA_START_PAGE
@@ -3630,6 +3662,7 @@ static char m_showconnerror = 1;
             ASYNC_SENDDATA_PAGE
             ASYNC_SENDDATA_END_PAGE
         }
+            break;
 		case TDX_PHCX:
 		{
 			ASYNC_SENDDATA_START_PAGE
@@ -4028,23 +4061,23 @@ static char m_showconnerror = 1;
         case TDX_XYMQHQCX:
         case TDX_XYXQHQCX:
         {
-    #ifdef IMAC_GDZQ
+            int funid = 3204;
+
+#ifdef IMAC_GDZQ
+            funid = 3226;
+#endif
+#ifdef IMAC_SXZQ
+            funid = 3234;
+#endif
+
             ASYNC_SENDDATA_START_PAGE
-            tempString = [NSString stringWithFormat:@"FUNCID=%i&",3226];
+            tempString = [NSString stringWithFormat:@"FUNCID=%i&",funid];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
             ASYNC_SENDDATA_START_WTFS
             ASYNC_SENDDATA_START_LSDATE
             ASYNC_SENDDATA_PAGE
             ASYNC_SENDDATA_END_PAGE
-    #else
-            ASYNC_SENDDATA_START_PAGE
-            tempString = [NSString stringWithFormat:@"FUNCID=%i&",3204];
-            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
-            ASYNC_SENDDATA_START_WTFS
-            ASYNC_SENDDATA_START_LSDATE
-            ASYNC_SENDDATA_PAGE
-            ASYNC_SENDDATA_END_PAGE
-    #endif
+
 
         }
             break;
@@ -4085,8 +4118,13 @@ static char m_showconnerror = 1;
             break;
         case TDX_XYRZHYCX:
         {
+            int funid = 3274;
+            
+#ifdef IMAC_SXZQ
+            funid = 3204;
+#endif
             ASYNC_SENDDATA_START_PAGE
-            tempString = [NSString stringWithFormat:@"FUNCID=%i&",3274];
+            tempString = [NSString stringWithFormat:@"FUNCID=%i&",funid];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
             ASYNC_SENDDATA_START_WTFS
             ASYNC_SENDDATA_START_LSDATE
@@ -4343,8 +4381,6 @@ static char m_showconnerror = 1;
 	NSMutableData * headdata = [[NSMutableData alloc] init];
 	NSString * tempString;
 	[self setExtendHead:headdata Session:dwEssion transkey:[self makedword:nIndex high:windindex]];
-    
-    
 	tempString = [NSString  stringWithFormat:@"FUNCTYPE=0&BranchID=%@&MAC=%@&",inputSave.branchId,g_TradeComm.m_macsstr];
 	[newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
 	tempString = [NSString  stringWithFormat:@"F120=%@&",inputSave.accout];
@@ -4484,6 +4520,24 @@ static char m_showconnerror = 1;
             ASYNC_SENDDATA_END
         }
             break;
+		case TDX_GDCX: { //股东查询
+			ASYNC_SENDDATA_START
+			tempString = [NSString  stringWithFormat:@"FuncID=%i&F110=0&",1122];
+			[newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+			ASYNC_SENDDATA_END
+		}
+			break;
+        case TDX_GDCX_DBPHZ: { //股东查询
+            ASYNC_SENDDATA_START_DBPHZ
+            tempString = [NSString  stringWithFormat:@"FuncID=%i&F110=7&F113=1&",1122];
+            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+            tempString = [NSString  stringWithFormat:@"F298=%@&",saveDate.DBPHZ_dfkhh];
+            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+            tempString = [NSString  stringWithFormat:@"F158=%@&",saveDate.DBPHZ_dfmm];
+            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+            ASYNC_SENDDATA_END
+        }
+            break;
         case TDX_SDXJC_LOGIN:
         {
             ASYNC_SENDDATA_START
@@ -4494,18 +4548,16 @@ static char m_showconnerror = 1;
             ASYNC_SENDDATA_END
         }
             break;
-		case TDX_GDCX: { //股东查询
-			ASYNC_SENDDATA_START
-			tempString = [NSString  stringWithFormat:@"FuncID=%i&F110=0&",1122];
-			[newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
-			ASYNC_SENDDATA_END
-		}
-			break;
 		case TDX_YHXX:{
             //908不送资金账号,送了就是查你送的这个资金账号的 银行信息
-			//ASYNC_SENDDATA_START
+#ifdef IMAC_SXZQ
+			ASYNC_SENDDATA_START
+#else
             //不送资金账号就是查所有的
             ASYNC_SENDDATA_START_DZH
+            ASYNC_SENDDATA_START_GDDM
+#endif
+
             int ngnid=908;
 #ifdef IMAC_GHZQ
             ngnid=922;
@@ -4517,13 +4569,15 @@ static char m_showconnerror = 1;
             //ngnid=922;
             ngnid=908;
 #endif
+
 			tempString = [NSString  stringWithFormat:@"FuncID=%i&",ngnid];
 			[newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
 			tempString = @"F110=0&";
 			[newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+            tempString = [NSString  stringWithFormat:@"F125=%i&",inputSave.accoutType];
+            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
             tempString = [NSString  stringWithFormat:@"F121=%@&",[clientinfos GetZjzh]];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
-            
             ASYNC_SENDDATA_END
 		}
 			break;
@@ -5025,20 +5079,18 @@ static char m_showconnerror = 1;
             ASYNC_SENDDATA_START
             tempString = [NSString  stringWithFormat:@"FuncID=%i&",110];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+            ASYNC_SENDDATA_START_GDDM
+            tempString = @"F110=7&";
+            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
             tempString = [NSString  stringWithFormat:@"F140=%@&",gpcode];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
             tempString = [NSString  stringWithFormat:@"F130=%d&",74];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
-            tempString = [NSString  stringWithFormat:@"F514=%i&",-1];
+            tempString = [NSString  stringWithFormat:@"F166=%i&",0];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
-            ASYNC_SENDDATA_START_GDDM
-            ASYNC_SENDDATA_START_WTFS
-            tempString = [NSString  stringWithFormat:@"F5250=%@&F5260=0&F5251=1&F5251=XYJY&",inputSave.accout];
+            tempString = [NSString  stringWithFormat:@"F242=%@&F244=%@&F298=%@&F158=%@&",saveDate.DBPHZ_xw,saveDate.DBPHZ_ptgddm,saveDate.DBPHZ_dfkhh,saveDate.DBPHZ_dfmm];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
-            tempString = [NSString  stringWithFormat:@"F166=%i&",gpnum];
-            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
-            tempString = @"F110=7&";
-            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+            
             ASYNC_SENDDATA_END
         }
             break;
@@ -5164,7 +5216,7 @@ static char m_showconnerror = 1;
                     else if (tradeType == 2){
                         tempString = @"F110=N&";
                     }
-                    else if(tradeType == MQHK)
+                    else if(tradeType == MQHK || tradeType == XGSG)
                     {
                         tempString = @"F110=7&";
                     }
@@ -5177,8 +5229,6 @@ static char m_showconnerror = 1;
             ASYNC_SENDDATA_START
             tempString = [NSString  stringWithFormat:@"FuncID=%i&",202];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
-            tempString = [NSString  stringWithFormat:@"F1302=%i&",39];
-            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
             tempString = [NSString  stringWithFormat:@"F110=7&F130=74&"];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
             tempString = [NSString  stringWithFormat:@"F140=%@&",gpcode];
@@ -5189,9 +5239,11 @@ static char m_showconnerror = 1;
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
             tempString = [NSString  stringWithFormat:@"F144=%i&",gpnum];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
-            tempString = [NSString  stringWithFormat:@"F166=1&"];
+            tempString = [NSString  stringWithFormat:@"F166=0&"];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
-            tempString = [NSString  stringWithFormat:@"F5250=%@&F5260=0&F5251=1&F5251=XYJY&",inputSave.accout];
+            tempString = [NSString  stringWithFormat:@"F245=%@&",saveDate.DBPHZ_zhlb];
+            [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
+            tempString = [NSString  stringWithFormat:@"F242=%@&F244=%@&F298=%@&F158=%@&",saveDate.DBPHZ_xw,saveDate.DBPHZ_ptgddm,saveDate.DBPHZ_dfkhh,saveDate.DBPHZ_dfmm];
             [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];
             ASYNC_SENDDATA_START_GDDM
             ASYNC_SENDDATA_END
@@ -5624,9 +5676,12 @@ static char m_showconnerror = 1;
 #ifdef IMAC_GDZQ
         tmpkhh=inputSave.accout;
 #endif
+#ifdef IMAC_SXZQ
+        tmpkhh=inputSave.accout;
+#endif
 		clientinfos.m_zjzh= [[NSString alloc] initWithFormat:@"%@",tmpkhh];
 		[clientinfos.m_zjzh release];
-		if(clientinfos.m_nQsbs==SYWG_DLL||clientinfos.m_nQsbs==GHZQ_DLL ||clientinfos.m_nQsbs==GTJA_DLL ||clientinfos.m_nQsbs==YHZQ_DLL || clientinfos.m_nQsbs==ZXJT_DLL|| clientinfos.m_nQsbs==GLZQ_DLL || clientinfos.m_nQsbs==MZZQ_DLL || clientinfos.m_nQsbs==TPYZQ_DLL || clientinfos.m_nQsbs==GDZQ_DLL || clientinfos.m_nQsbs==SXZQ_DLL || clientinfos.m_nQsbs == PAZQ_DLL)//有的券商需要处理营业部信息，如申万，有的不需要，如招商
+		if(clientinfos.m_nQsbs==SYWG_DLL||clientinfos.m_nQsbs==GHZQ_DLL ||clientinfos.m_nQsbs==GTJA_DLL ||clientinfos.m_nQsbs==YHZQ_DLL || clientinfos.m_nQsbs==ZXJT_DLL|| clientinfos.m_nQsbs==GLZQ_DLL || clientinfos.m_nQsbs==MZZQ_DLL || clientinfos.m_nQsbs==TPYZQ_DLL || clientinfos.m_nQsbs==GDZQ_DLL || clientinfos.m_nQsbs == SXZQ_DLL)//有的券商需要处理营业部信息，如申万，有的不需要，如招商
 		{
 			inputSave.branchId=[NSString stringWithFormat:@"%@",[pParsers getFieldData:0 fieldFlag:TDX_ID_XT_BRANCHID]];
 			clientinfos.m_TdxRealBranchID=[inputSave.branchId intValue];
@@ -6013,16 +6068,16 @@ static char m_showconnerror = 1;
 				else if(queryindex==TDX_ZJYE || queryindex==TDX_ZJYE2 || queryindex==TDX_ZJYE3 || queryindex==TDX_GDCX)
 				{
 #ifdef IMAC_PAZQ
-//                    if(bzzj == 0)
-//                    {
-//                        zzall += [[tempdata objectAtIndex:8] doubleValue];
-//                        if(i+1 == sCount)
-//                        {
-//                            ST_ZJGFINFO tmpzjgf=zjgfclass.stzjgf;
-//                            tmpzjgf.zzc[bzzj]= zzall;
-//                            zjgfclass.stzjgf = tmpzjgf;
-//                        }
-//                    }
+                    //                    if(bzzj == 0)
+                    //                    {
+                    //                        zzall += [[tempdata objectAtIndex:8] doubleValue];
+                    //                        if(i+1 == sCount)
+                    //                        {
+                    //                            ST_ZJGFINFO tmpzjgf=zjgfclass.stzjgf;
+                    //                            tmpzjgf.zzc[bzzj]= zzall;
+                    //                            zjgfclass.stzjgf = tmpzjgf;
+                    //                        }
+                    //                    }
                     
                     switch (bzzj)
                     {
@@ -6054,14 +6109,13 @@ static char m_showconnerror = 1;
                         tmpzjgf.zzc[2]= zzallGY;
                         zjgfclass.stzjgf = tmpzjgf;
                     }
-                
+                    
                     mainzjzh = clientinfos.m_realzjzh[0];
                     if([mainzjzh isEqualToString:@""]
                        || mainzjzh.length < 2
                        || ![mainzjzh isEqualToString:tempdata[0]]) continue;
 #endif
-                    
-                    pParsers.m_nqsid=clientinfos.m_nQsbs;
+					pParsers.m_nqsid=clientinfos.m_nQsbs;
 					[showData addObject:[pParsers getItemData2:tempArray Index:i TDX_Choise:queryindex withclientinfo:clientinfos withzjgf:zjgfclass]];
 #ifdef IMAC_PAZQ
                     allckjz = [[tempdata objectAtIndex:7] doubleValue];
@@ -6085,7 +6139,7 @@ static char m_showconnerror = 1;
                     }
 #endif
 				}
-				else
+				else 
 				{
 					for(j=0;j<[pParsers.sFieldColstr count] && j<[tempdata count];j++)
 					{

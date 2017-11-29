@@ -216,6 +216,8 @@ typedef struct {
 	NSMutableData	 *authpassword;
 	NSString	 *reloginsession;
 	NSString *yhdm;
+    NSString* dbphz_gddm;
+    NSString* dbphz_mm;
 }
 @property short nreloginaccoutType;
 @property short accoutType;
@@ -230,6 +232,8 @@ typedef struct {
 @property(nonatomic,retain) NSMutableData *authpassword;
 @property(nonatomic,retain) NSString *reloginsession;
 @property(nonatomic,retain) NSString *yhdm;
+@property(nonatomic,retain) NSString *dbphz_gddm;
+@property(nonatomic,retain) NSString *dbphz_mm;
 
 -(void)setjyPassword:(unsigned char *)data len:(int)nlen;
 -(void)releasePassword;
@@ -258,7 +262,6 @@ typedef struct {
 @property(nonatomic) BOOL m_bvisible;
 @property(nonatomic) int maxwidth;
 @end
-
 
 
 @interface StockInfo : NSObject<NSCoding>
@@ -443,6 +446,12 @@ typedef struct {
 {
 	int nStartDate;
 	int nEndDate;
+    NSArray* arrayData;
+    NSString* DBPHZ_xw;
+    NSString* DBPHZ_ptgddm;
+    NSString* DBPHZ_zhlb;
+    NSString* DBPHZ_dfkhh; //资金帐号
+    NSString* DBPHZ_dfmm;
     int nzjlsBZ;
     NSString* xwdm;
     NSString* jysdxjc_login;
@@ -450,6 +459,12 @@ typedef struct {
 }
 @property int nStartDate;
 @property int nEndDate;
+@property (nonatomic , retain) NSArray * arrayData;
+@property (nonatomic , retain) NSString * DBPHZ_xw;
+@property (nonatomic , retain) NSString * DBPHZ_ptgddm;
+@property (nonatomic , retain) NSString * DBPHZ_zhlb;
+@property (nonatomic , retain) NSString * DBPHZ_dfkhh;
+@property (nonatomic , retain) NSString * DBPHZ_dfmm;
 @property int nzjlsBZ;
 @property (nonatomic,copy) NSString* xwdm;
 @property (nonatomic,copy) NSString* jysdxjc_login;

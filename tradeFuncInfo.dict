@@ -45,6 +45,12 @@
 				</dict>
 				<dict>
 					<key>Name</key>
+					<string>历史委托</string>
+					<key>Image</key>
+					<string>Image01.png</string>
+				</dict>
+				<dict>
+					<key>Name</key>
 					<string>历史成交</string>
 					<key>Image</key>
 					<string>Image01.png</string>
@@ -61,19 +67,13 @@
 					<key>Image</key>
 					<string>Image01.png</string>
 				</dict>
-				<dict>
-					<key>Name</key>
-					<string>配号查询</string>
-					<key>Image</key>
-					<string>Image01.png</string>
-				</dict>
 			</array>
 			<key>Name</key>
 			<string>查询</string>
 			<key>Image</key>
 			<string>Image01.png</string>
 		</dict>
-		<dict>
+        <dict>
 			<key>Name</key>
 			<string>银证业务</string>
 			<key>Image</key>
@@ -100,6 +100,45 @@
 				</dict>
 			</array>
 		</dict>
+        <dict>
+            <key>Children</key>
+            <array>
+                <dict>
+                    <key>Name</key>
+                    <string>新股申购</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>    可申购新股查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>配号查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>中签查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>    新股申购额度查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+            </array>
+            <key>Name</key>
+            <string>新股申购 </string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
 		<dict>
 			<key>Name</key>
 			<string>修改密码</string>
@@ -113,5 +152,210 @@
 			<string>Image01.png</string>
 		</dict>
 	</array>
+    <key>xy</key>
+    <array>
+        <dict>
+            <key>Name</key>
+            <string>担保品买入</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Name</key>
+            <string>担保品卖出</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Name</key>
+            <string>融资买入</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Name</key>
+            <string>融券卖出</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Name</key>
+            <string>卖券还款</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Name</key>
+            <string>买券还券</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Name</key>
+            <string>现金还款</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Name</key>
+            <string>现券还券</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Name</key>
+            <string>撤单</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Children</key>
+            <array>
+                <dict>
+                    <key>Name</key>
+                    <string>资金股份</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>当日委托</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>当日成交</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>资金流水</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>历史委托</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>历史成交</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>    信用资产查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>    信用合约查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>    标的证券查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>    担保品证券查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+            </array>
+            <key>Name</key>
+            <string>查询</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Name</key>
+            <string>银证业务</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+            <key>Children</key>
+            <array>
+                <dict>
+                    <key>Name</key>
+                    <string>银证转账</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>银行余额</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>转账查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+            </array>
+        </dict>
+        <dict>
+            <key>Children</key>
+            <array>
+                <dict>
+                    <key>Name</key>
+                    <string>新股申购</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>    可申购新股查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>配号查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>中签查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+                <dict>
+                    <key>Name</key>
+                    <string>    新股申购额度查询</string>
+                    <key>Image</key>
+                    <string>Image01.png</string>
+                </dict>
+            </array>
+            <key>Name</key>
+            <string>新股申购 </string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Name</key>
+            <string>修改密码</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+        <dict>
+            <key>Name</key>
+            <string>股东列表</string>
+            <key>Image</key>
+            <string>Image01.png</string>
+        </dict>
+    </array>
+
 </dict>
 </plist>

@@ -581,6 +581,7 @@ typedef struct st_zjgfinfo
 {
     
 	BOOL	  m_blocking;//是否正在锁屏
+    BOOL      m_DBPHZblocking;//担保品划转中是否正在锁屏
 	short         m_nQsbs;//券商标志 
 	short         m_TdxRealBranchID;
 	short         m_nKhqx;
@@ -637,6 +638,7 @@ typedef struct st_zjgfinfo
 @property(nonatomic,retain) Tradeccf   *tradeccf;
 @property(nonatomic) short m_nrealIndex;
 @property(nonatomic) short m_TdxRealBranchID;
+@property(nonatomic) BOOL      m_DBPHZblocking;
 @property(nonatomic) short m_nKhqx;
 @property(nonatomic) BOOL m_bgtbs;
 @property(nonatomic) BOOL m_bKfsjjflag;

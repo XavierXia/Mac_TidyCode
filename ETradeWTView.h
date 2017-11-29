@@ -80,7 +80,12 @@
     CustonTextField* xjhkpriceText;
     NSTextField * kyjeLabel;
     NSTextField * xhkeLabel;
+    NSTextField * sgjgLabel;
+    NSTextField * sgsxLabel;
+    NSTextField * sgxxLabel;
+    NSTextField * kyzjLabel;
     NSButton * xhkeAllMoneyButton;
+    NSButton * xgsgAllMoneyButton;
     NSStepper * xjhkpriceStepper;
 	
 	NSStepper * priceStepper;
@@ -109,6 +114,8 @@
 	float currClose;
 	NSMutableArray * pkTitleArray;
 	NSMutableArray * pkShowArray;
+    NSMutableArray * DBPHZTitleArray;
+    NSMutableArray * DBPHZGDDMArray;
 	
 	NSRect viewRect;
     NSRect tableViewRect;
@@ -121,9 +128,12 @@
     
     NSView *XQHQView; //现券还券
     NSView *XJHKView; //现金还款
+    NSView *XGSGView; //新股申购
     NSView* wtViewFrame;
 	id <showBodyDelegate> showDelegate;
     id<BodyDelegate> bDelegates;
+    
+    int xgsgMSGS;
 
 }
 
@@ -140,6 +150,8 @@
 @property(nonatomic,retain) NSView* XQHQView;
 @property(nonatomic,retain) NSView* XJHKView;
 @property(nonatomic,retain) NSView* wtViewFrame;
+@property(nonatomic) int xgsgMSGS;
+@property(nonatomic, retain)NSMutableArray* DBPHZGDDMArray;
 
 - (id)initWithData:(NSRect)frame theData:(EGetData *)_eGetData showType:(int)_showType;
 - (void)clearLabel;
@@ -162,5 +174,6 @@
 -(void)refreshHqData;
 -(void)dealTitleS;
 -(void)getXJHKData;
+-(void)getDBPHZGDDMData;
 
 @end

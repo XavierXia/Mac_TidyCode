@@ -263,6 +263,11 @@
                     }
                     
 #endif
+                    if([pfield.m_sFieldName isEqualToString:@"参数"] || [pfield.m_sFieldName isEqualToString:@"(参数)操作数据"])
+                    {
+                        pfield.m_bvisible=NO;
+                    }
+                    
 					if(pfield.m_bvisible)
 					{
 						pfield.nvisibleindex=nvisibleindex;
@@ -649,14 +654,13 @@
 			
 			tempString = [self getFieldData:nRow fieldFlag:TDX_ID_GTZZC];//"资产"
 			tmpzjgf.gtzzc[nbz]=[tempString doubleValue];
-//			if(!([tempString length] && [tempString isEqualToString:@"－"]==NO))
-//			{
+			if(!([tempString length] && [tempString isEqualToString:@"－"]==NO))
+			{
 				if(nbz==1)
 					tempString=[NSString stringWithFormat:@"%.3f",tmpzjgf.zzc[nbz]];//"总资产"
 				else	
 					tempString=[NSString stringWithFormat:@"%.2f",tmpzjgf.zzc[nbz]];//"总资产"
-//			}
-            
+			}
 			[theData addObject:tempString];
 			if(nbz==1)
 				tempString=[NSString stringWithFormat:@"%.3f",tmpzjgf.fdyk[nbz]];//"浮动盈亏"
@@ -861,7 +865,6 @@
 			return theData;
 			break;
 		case TDX_CDCX://"证券名称","买卖标志","状态说明","委托价格","委托数量","成交价格","成交数量"
-        case TDX_DBPHZCDCX:
 			tempString = [self getFieldData:nRow fieldFlag:TDX_ID_SCFLAG];//买卖标志
 			[theData addObject:tempString];
 			tempString = [self getFieldData:nRow fieldFlag:TDX_ID_MMBZ];//买卖标志
@@ -898,6 +901,7 @@
 			[theData addObject:[self GetUIColorFromMmbz:tempString]];
 			return theData;
 			break;
+        case TDX_DBPHZCD:
 		case TDX_LSWT://"证券名称","买卖标志","状态说明","委托价格","委托数量","成交价格","成交数量"
 			//,"委托时间","委托编号","证券代码","股东代码","报价方式"
 			tempString = [self getFieldData:nRow fieldFlag:TDX_ID_MMBZ];//买卖标志
@@ -943,6 +947,7 @@
 			break;
 		case TDX_PHCX://"证券名称",@"成交时间",@"买卖标志",@"成交价格",@"成交数量",
         case TDX_IPOSGED:
+        case TDX_KSGXGCX:
 			//@"成交金额",@"成交编号",@"委托编号",@"证券代码",@"股东代码"
 			[theData addObject:[NSColor redColor]];
 			return theData;

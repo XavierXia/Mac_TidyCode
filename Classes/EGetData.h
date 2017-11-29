@@ -37,6 +37,7 @@ typedef enum tradeType //信用交易交易类型
     MQHQ,      //买券还券
     XJHK,      //现金还款
     XQHQ,      //现券还券
+    XGSG,      //新股申购
 }tradeType;
 
 typedef enum HZFX //信用交易担保品划转方向
@@ -133,6 +134,9 @@ typedef enum HZFX //信用交易担保品划转方向
     BOOL  m_bpcywflag;
     tradeType tradeType;
     HZFX HZFX;  //担保品划转方向
+    int nyybsHT; //eTrade.xml中 Branch里面的 hostType的值,0为登录的 普通交易,1为登录的 融资融券;
+    NSMutableArray*	gddmDBPHZ;
+    NSMutableArray* DBPHZGDDMArray;
 }
 @property(nonatomic,assign)tradeType tradeType;
 @property(nonatomic,assign)HZFX HZFX;
@@ -168,6 +172,7 @@ typedef enum HZFX //信用交易担保品划转方向
 @property float dataSend_3G;
 @property float dataRec_3G;
 @property  short hostTransferCount;
+@property int nyybsHT;
 
 @property(nonatomic,assign) id<asynclogindelegate> myjyasyncdelegate;
 @property(nonatomic,assign) id<RefreshDelegate> refreshdelegate;
@@ -193,6 +198,8 @@ typedef enum HZFX //信用交易担保品划转方向
 @property (nonatomic,retain) NSMutableArray * jjcodeArray;
 @property (nonatomic,retain) NSMutableArray * fecxArray;
 @property (nonatomic,retain) NSMutableArray * lxfsArray;
+@property (nonatomic,retain) NSMutableArray * gddmDBPHZ;
+@property (nonatomic,retain) NSMutableArray * DBPHZGDDMArray;
 @property (nonatomic,retain) ClientInfo*		clientinfos;
 @property (nonatomic,retain) DateSave * saveDate;
 

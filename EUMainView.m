@@ -452,7 +452,6 @@
 		[self dismissKeyboard];
 	}
 	
-	
 	if(_typeID == MAC_SHOWHIDETRADE_FUNC){
 		if (eGetData.tradeLoginFlag) {
 			if (tradeShowFlag) {
@@ -552,6 +551,19 @@
 			
 			//处理列表
 			[tradeView.bodyView dealTradeProcess:[NSString stringWithString:_gpcode] gpSetcode:_setcode typeID:_typeID pareOne:_paraone paraTwo:_paraTwo pareThree:[NSString stringWithString:_paraThree]];
+            
+            //担保品划转密码输入界面
+            if(_paraone == DBPHZ)
+            {
+                if([tradeView DBPHZshowlockscreen]) return;
+            }
+            else
+            {
+                if(eGetData.clientinfos.m_DBPHZblocking==YES)
+                {
+                    [tradeView DBPHZunlockscreen];
+                }
+            }
 
 		}
 		
@@ -871,6 +883,7 @@
         tradeView.tradeDelegate = self;
         tradeView.reconObject.systemDelegate = self;
         tradeView.m_lockscreen.tradeDelegate = self;
+        tradeView.m_DBPHZlockscreen.tradeDelegate = self;
         tradeView.operProcessDelegate = self;
         tradeView.funcList.operProcessDelegate=self;
         tradeView.bodyView.operProcessDelegate=self;
@@ -1056,6 +1069,16 @@
 
 -(void)unlockButtonClick{
 	[tradeView unlockscreen];
+}
+
+-(void)tradeDBPHZunlockscreen
+{
+    [tradeView DBPHZunlockscreen];
+}
+
+-(void)tradeDBPHZinputGDDM
+{
+    [tradeView.bodyView getDBPHZ_GDDM];
 }
 
 #pragma mark 按键精灵相关

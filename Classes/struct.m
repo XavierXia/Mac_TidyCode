@@ -142,7 +142,7 @@
 
 @implementation InputSave
 
-@synthesize accoutType,gddm,branchId,password,accout,sessionID,wtfs,tdxbranchid,authpassword,authtype,yhdm,reloginsession,nreloginaccoutType;
+@synthesize accoutType,gddm,branchId,password,accout,sessionID,wtfs,tdxbranchid,authpassword,authtype,yhdm,reloginsession,nreloginaccoutType,dbphz_gddm,dbphz_mm;
 
 
 - (id) init
@@ -154,6 +154,8 @@
 		password=nil;
 		authpassword=nil;
 		reloginsession=nil;
+        dbphz_gddm= nil;
+        dbphz_mm=nil;
 	}
 	return self;
 }
@@ -169,6 +171,8 @@
 	[password release];
 	[wtfs release];
 	[yhdm release];
+    [dbphz_gddm release];
+    [dbphz_mm release];
 	[super dealloc];
 }
 
@@ -243,7 +247,7 @@
 
 @implementation DateSave
 
-@synthesize nStartDate,nEndDate,nzjlsBZ,xwdm,jysdxjc_login,b_isFirstUsed;
+@synthesize nStartDate,nEndDate,arrayData,DBPHZ_xw,DBPHZ_ptgddm,DBPHZ_zhlb,DBPHZ_dfkhh,DBPHZ_dfmm,nzjlsBZ,xwdm,jysdxjc_login,b_isFirstUsed;;
 -(id) init
 {
 	self = [super init];

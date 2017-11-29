@@ -368,7 +368,9 @@
 -(void)closeButtonClick;
 -(void)lockButtonClick;
 -(void)unlockButtonClick;
--(void)changeSizeButtonClick:(int)flag; 
+-(void)changeSizeButtonClick:(int)flag;
+-(void)tradeDBPHZunlockscreen;
+-(void)tradeDBPHZinputGDDM;
 @end
 
 @protocol MouseDelegate;

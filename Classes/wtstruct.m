@@ -3377,7 +3377,7 @@ NSString *zxcachepath=@"/T0002/zxcache";
 
 @implementation Tradeccf
 
-@synthesize lcgsdm,exceptlcgsdm,bweaktip,zyckgpdms,nszgzdw,nshgzdw,gsdm_selgds,m_bjjzndtex,nLSWTJGTS;
+@synthesize lcgsdm,exceptlcgsdm,bweaktip,zyckgpdms,nszgzdw,nshgzdw,gsdm_selgds,m_bjjzndtex;
 
 -(id)init
 {
@@ -3551,7 +3551,7 @@ NSString *zxcachepath=@"/T0002/zxcache";
 
 @implementation ClientInfo
 
-@synthesize gdinfos,m_nQsbs,scinfos,jjinfos,lcinfos,caches,m_zjzh,yhxxs,stzjgf,stzjgfjj,stzjgflc,strawzjgf,strawzjgfjj,strawzjgflc,qsconfigs,m_bonlyinithqinfo,hqParams,dataLltjs,zxLinks,m_blocking,m_nlastjyopertime;
+@synthesize gdinfos,m_nQsbs,scinfos,jjinfos,lcinfos,caches,m_zjzh,yhxxs,stzjgf,stzjgfjj,stzjgflc,strawzjgf,strawzjgfjj,strawzjgflc,qsconfigs,m_bonlyinithqinfo,hqParams,dataLltjs,zxLinks,m_blocking,m_DBPHZblocking,m_nlastjyopertime;
 @synthesize m_TdxRealBranchID,m_nKhqx,m_bKfsjjflag,m_blcflag,m_bggflag,m_bqhflag,m_bGetMaxBuy,m_bxyjyflag,m_nZhlb,tradeccf,localjysites,localhqsites;
 @synthesize m_nRealZjzhNum,m_realzjzh,m_strKhqxmc,m_strTdxWtfs,m_username,m_bgtbs,m_jjzjzh,m_nrealIndex,m_bgpflag,logininfos,multilogininfos,jyParams,dldzxy;
 @synthesize styleParams,versionParams,gridCellCache,httpProxyInfo;
@@ -3602,6 +3602,7 @@ NSString *zxcachepath=@"/T0002/zxcache";
 		dataLltjs=nil;
 		zxLinks=[ZxLinkInfo new];
 		m_blocking=NO;
+        m_DBPHZblocking = YES;//第一次应该锁住
 		m_nlastjyopertime=time(NULL);
 	}
 	

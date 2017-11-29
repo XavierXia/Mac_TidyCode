@@ -43,6 +43,7 @@
 #define IMAC_SSL_JY         //安全加固，205以后的交易中心都要安全加固，不然交易登录会提示424，创建请求结构失败
 //#define IMAC_ONLYHQ
 //#define JY_SDXJC            //适当性检查
+#define IMAC_ALLOWXYJY //在普通交易的基础上,允许信用交易
 
 //#define IMAC_ZXJT
 //#define IMAC_ZSZQ
@@ -60,7 +61,9 @@
 //#define IMAC_WLZQ
 //#define IMAC_TPY
 //#define IMAC_HXZQ
+//#define IMAC_SXZQ
 #define IMAC_PAZQ
+
 #define QUERY_LOOPEND
 
 #ifdef IMAC_HXZQ
@@ -896,14 +899,17 @@
 #define TDX_DZJZHCX  116	// 多资金帐号信息查询
 #define TDX_PT_DZJZJGJ  117	// 多资金帐号-资金归集
 #define TDX_PT_DZJZZ  118	// 多资金帐号-转账
-#define TDX_DBPHZCDCX       119 //担保品划转撤单查询
-#define TDX_XYSXCX          120 //信用上限查询
-#define TDX_XGSGDJKCX       121 //新股申购待缴款查询
-#define TDX_XGSG            122 //新股申购
-#define TDX_YHYE3           123 //通过948来查询余额
-#define TDX_XGZJMM          124 //修改资金密码
-#define TDX_SDXJC_LOGIN     125 //登录时，客户端发送322请求,适当性检查
-#define TDX_SDXJC_CLICKMENU 126 //点击菜单，发送198功能
+#define TDX_DBPHZCD       119 //担保品划转撤单
+#define TDX_DBPHZCX       120 //担保品划转查询
+#define TDX_XYSXCX          121 //信用上限查询
+#define TDX_XGSGDJKCX       122 //新股申购待缴款查询
+#define TDX_XGSG            123 //新股申购
+#define TDX_KSGXGCX         124 //可申购新股查询
+#define TDX_GDCX_DBPHZ      125	// 担保品划转股东查询
+#define TDX_YHYE3           126 //通过948来查询余额
+#define TDX_XGZJMM          127 //修改资金密码
+#define TDX_SDXJC_LOGIN     128 //登录时，客户端发送322请求,适当性检查
+#define TDX_SDXJC_CLICKMENU 129 //点击菜单，发送198功能
 
 #define TDX_ID_ZQJYBS						90			// 证券交易标识 '1'为不支持 其他为支持
 #define TDX_ID_FQSL							98
@@ -1503,6 +1509,17 @@ tempString = [NSString  stringWithFormat:@"F120=%@&",inputSave.accout];\
 tempString = [NSString  stringWithFormat:@"F134=%@&",[self GetJymmString]];\
 [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];\
 tempString = [NSString  stringWithFormat:@"F125=%i&",inputSave.accoutType];\
+[newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];\
+tempString = [NSString  stringWithFormat:@"F121=%@&",[clientinfos GetZjzh]];\
+[newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];\
+
+#define ASYNC_SENDDATA_START_DBPHZ	\
+[self setExtendHead:headdata Session:dwEssion transkey:[self makedword:nIndex high:windindex]];\
+tempString = [NSString  stringWithFormat:@"FUNCTYPE=0&BranchID=%@&MAC=%@&",inputSave.branchId,g_TradeComm.m_macsstr];\
+[newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];\
+tempString = [NSString  stringWithFormat:@"F120=%@&",inputSave.accout];\
+[newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];\
+tempString = [NSString  stringWithFormat:@"F134=%@&",[self GetJymmString]];\
 [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];\
 tempString = [NSString  stringWithFormat:@"F121=%@&",[clientinfos GetZjzh]];\
 [newdata appendData:[tempString dataUsingEncoding:NSUTF8StringEncoding]];\

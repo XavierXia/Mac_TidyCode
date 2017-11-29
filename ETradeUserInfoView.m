@@ -79,7 +79,7 @@
 		[scrollView setHasHorizontalScroller:YES];
 		[scrollView setHasVerticalScroller:YES];
 		[scrollView setDrawsBackground:NO];
-        
+		
 		myTableView = [[myTableView2 alloc] initWithFrame:NSMakeRect(0, 0, frame.size.width, frame.size.height)];
 		
 		tableHeadView=[[NSTableHeaderView alloc] initWithFrame:NSMakeRect(0, frame.size.height-TITLE_HEIGHT, frame.size.width, TITLE_HEIGHT)];
@@ -164,7 +164,7 @@
 }
 
 -(void)rightMenu:(id)sender{
-	//[myTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[myTableView clickedRow]] byExtendingSelection:NO];
+	[myTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[myTableView clickedRow]] byExtendingSelection:NO];
 
 	NSMenuItem * tempItem = (NSMenuItem *)sender;
 	int tempInt = [tempItem tag];
@@ -294,6 +294,8 @@
 			case TDX_PHCX:
 			case TDX_ZZCX:
             case TDX_XGZQCX:
+            case TDX_DBPHZCD:
+            case TDX_KSGXGCX:
             {
 #ifdef IMAC_GXZQ
                 if(self.tag==TDX_ZZCX)
@@ -381,6 +383,8 @@
         || eGetData.tradeType == MQHQ
         || eGetData.tradeType == MQHK
         || eGetData.tradeType == XQHQ
+        || eGetData.tradeType == XGSG
+        || eGetData.tradeType == ZQCX
         )
     {
         if(pParsers && pParsers.sFieldColstr)
@@ -415,16 +419,22 @@
     }
     NSArray * itemArray = [[NSArray alloc]init];
     if (eGetData.tradeType ==RZBuy){
+        
         itemArray = [NSArray arrayWithObjects:@"交易所名称",@"证券代码",@"证券名称",@"证券数量",@"可卖数量",nil];
+        
 #ifdef IMAC_GDZQ
         itemArray = [NSArray arrayWithObjects:@"序号",@"证券名称",@"证券代码",@"最新市值",@"证券数量",@"可卖数量",@"成本价",@"当前价",@"浮动盈亏",@"盈亏比例(%)",@"证券市场",@"股东代码",nil];
 #endif
         
+#ifdef IMAC_SXZQ
+        itemArray = [NSArray arrayWithObjects:@"证券代码",@"证券名称",@"交易所名称",nil];
+#endif
+
 #ifdef IMAC_PAZQ
         itemArray = [NSArray arrayWithObjects:@"证券代码",@"证券名称",@"股票折算率",@"融资保证金比例",@"融券保证金比例",@"备注",@"交易所名称",nil];
 #endif
-        
-        [eGetData sendTradeQueryData:TDX_XYBDZQCX pageIndex:(TDX_XYBDZQCX+PAGE_REFRESHINDEX) objIndex:self.tradeindex Session:eGetData.inputSave.sessionID StartIndex:(pageIndex*PAGE_ROWNUM+[eGetData GetStartIndex]) ReqLines:PAGE_ROWNUM TotleLine:(PAGE_ROWNUM*MAX_PAGENUM) positionstr:@""];
+
+           [eGetData sendTradeQueryData:TDX_XYBDZQCX pageIndex:(TDX_XYBDZQCX+PAGE_REFRESHINDEX) objIndex:self.tradeindex Session:eGetData.inputSave.sessionID StartIndex:(pageIndex*PAGE_ROWNUM+[eGetData GetStartIndex]) ReqLines:PAGE_ROWNUM TotleLine:(PAGE_ROWNUM*MAX_PAGENUM) positionstr:@""];
     }
     else if(eGetData.tradeType ==RZSell){
         
@@ -432,10 +442,14 @@
 #ifdef IMAC_GDZQ
         itemArray = [NSArray arrayWithObjects:@"序号",@"证券名称",@"证券代码",@"融券市值",@"实时融券负债数量",@"成本价",@"当前价",@"浮动盈亏",@"盈亏比例(%)",@"今买数量",@"今卖数量",@"今买金额",@"今卖金额",@"证券市场",@"股东代码",nil];
 #endif
-        
+#ifdef IMAC_SXZQ
+        itemArray = [NSArray arrayWithObjects:@"证券代码",@"证券名称",@"交易所名称",nil];
+#endif
+
 #ifdef IMAC_PAZQ
         itemArray = [NSArray arrayWithObjects:@"证券代码",@"证券名称",@"可用股份",@"保证金比例",nil];
 #endif
+        
         [eGetData sendTradeQueryData:TDX_XYMCCX pageIndex:(TDX_XYMCCX+PAGE_REFRESHINDEX) objIndex:self.tradeindex Session:eGetData.inputSave.sessionID StartIndex:(pageIndex*PAGE_ROWNUM+[eGetData GetStartIndex]) ReqLines:PAGE_ROWNUM TotleLine:(PAGE_ROWNUM*MAX_PAGENUM) positionstr:@""];
     }
     else if(eGetData.tradeType ==XYZCCX){
@@ -458,6 +472,9 @@
     }
     else if(eGetData.tradeType ==XYRZHYCX){
         itemArray = [NSArray arrayWithObjects:@"资金帐号",@"币种",@"委托编号",@"证券代码",@"证券名称",@"委托日期",@"交易所名称",@"委托数量",@"成交数量",@"委托金额",@"委托冻结金额",@"成交金额",@"清算金额",@"合约状态",@"负载截止日期",@"原始的负债截止日期",@"融资本金",@"融资其它费合计",@"融资负载本金",nil];
+#ifdef IMAC_SXZQ
+        itemArray = [NSArray arrayWithObjects:@"开仓日期",@"归还截止日",@"证券代码",@"证券名称",@"合约类型",@"未还数量",@"未还本金",@"未还数量",@"未还利息",@"合约状态",@"合约性质",@"合约年利率",@"合约编号",@"展期次数",@"展期状态",nil];
+#endif
         [eGetData sendTradeQueryData:TDX_XYRZHYCX pageIndex:(TDX_XYRZHYCX+PAGE_REFRESHINDEX) objIndex:self.tradeindex Session:eGetData.inputSave.sessionID StartIndex:(pageIndex*PAGE_ROWNUM+[eGetData GetStartIndex]) ReqLines:PAGE_ROWNUM TotleLine:(PAGE_ROWNUM*MAX_PAGENUM) positionstr:@""];
     }
     else if(eGetData.tradeType ==XYRQHYCX){
@@ -465,7 +482,7 @@
         [eGetData sendTradeQueryData:TDX_XYRQHYCX pageIndex:(TDX_XYRQHYCX+PAGE_REFRESHINDEX) objIndex:self.tradeindex Session:eGetData.inputSave.sessionID StartIndex:(pageIndex*PAGE_ROWNUM+[eGetData GetStartIndex]) ReqLines:PAGE_ROWNUM TotleLine:(PAGE_ROWNUM*MAX_PAGENUM) positionstr:@""];
     }
     else if(eGetData.tradeType ==DBPZQCX){
-        itemArray = [NSArray arrayWithObjects:@"交易所名称",@"证券代码",@"证券名称",@"担保品折算率",@"备注",nil];
+        itemArray = [NSArray arrayWithObjects:@"交易所名称",@"证券代码",@"证券名称",@"担保品折算率",nil];
         [eGetData sendTradeQueryData:TDX_XYDBPZQCX pageIndex:(TDX_XYDBPZQCX+PAGE_REFRESHINDEX) objIndex:self.tradeindex Session:eGetData.inputSave.sessionID StartIndex:(pageIndex*PAGE_ROWNUM+[eGetData GetStartIndex]) ReqLines:PAGE_ROWNUM TotleLine:(PAGE_ROWNUM*MAX_PAGENUM) positionstr:@""];
     }
     else if(eGetData.tradeType ==ZQCX){
@@ -473,11 +490,10 @@
         [eGetData sendTradeQueryData:TDX_XGZQCX pageIndex:(TDX_XGZQCX+PAGE_REFRESHINDEX) objIndex:self.tradeindex Session:eGetData.inputSave.sessionID StartIndex:(pageIndex*PAGE_ROWNUM+[eGetData GetStartIndex]) ReqLines:PAGE_ROWNUM TotleLine:(PAGE_ROWNUM*MAX_PAGENUM) positionstr:@""];
     }
     else if(eGetData.tradeType ==DBPHZ){
-        itemArray = [NSArray arrayWithObjects:@"证券代码",@"证券名称",@"证券数量",@"库存数量",@"可卖数量",@"担保品折算率",@"交易所名称",@"股东代码",nil];
+        itemArray = [NSArray arrayWithObjects:@"证券代码",@"证券名称",@"当前价",@"证券数量",@"可卖数量",@"股东代码",@"成本价",@"交易所名称",nil];
         eGetData.inputSave.wtfs=@"7";
         [eGetData sendTradeQueryData:TDX_DBPHZ pageIndex:(TDX_DBPHZ+PAGE_REFRESHINDEX) objIndex:self.tradeindex Session:eGetData.inputSave.sessionID StartIndex:(pageIndex*PAGE_ROWNUM+[eGetData GetStartIndex]) ReqLines:PAGE_ROWNUM TotleLine:(PAGE_ROWNUM*MAX_PAGENUM) positionstr:@""];
     }
-
     for (int i =0; i<itemArray.count; i++) {
         NSTableColumn *column=[[NSTableColumn alloc] initWithIdentifier:[NSString stringWithFormat:@"%d",i]];
         NSTableHeaderCell * tempCell = [[NSTableHeaderCell alloc] initTextCell:itemArray[i]];
@@ -668,7 +684,7 @@
 
 #pragma mark 请求相关
 -(void)singleClick:(id)sender{
-	if ((self.tag == TDX_ZJLS)||(self.tag == TDX_PHCX)||(self.tag == TDX_GDCX)||eGetData.tradeType==XYZCCX||eGetData.tradeType==XYRZHYCX||eGetData.tradeType==XYRQHYCX||eGetData.tradeType==XYFZCX || eGetData.tradeType == XYSXCX){
+	if ((self.tag == TDX_ZJLS)||(self.tag == TDX_PHCX)||(self.tag == TDX_GDCX)||eGetData.tradeType==XYZCCX||eGetData.tradeType==XYRZHYCX||eGetData.tradeType==XYRQHYCX||eGetData.tradeType==XYFZCX || eGetData.tradeType == XYSXCX || eGetData.tradeType == TDX_KSGXGCX){
 		return;
 	}
     int nindex=[myTableView selectedRow];
@@ -691,13 +707,19 @@
 }
 
 -(void)doubleClick:(id)sender{
-	if (self.tag == TDX_GFCX || eGetData.tradeType==DBPZQCX || eGetData.tradeType==MQHQ || eGetData.tradeType == XQHQ) {
+	if (self.tag == TDX_GFCX
+        || eGetData.tradeType==DBPZQCX
+        || eGetData.tradeType==MQHQ
+        || eGetData.tradeType == XQHQ
+        || eGetData.tradeType == XGSG) {
         int nindex=[myTableView selectedRow];
         if(nindex>=0 && nindex<[showDataArray count])
         {
             NSArray *rowData = [showDataArray objectAtIndex:nindex];
             m_bdoubleclickflag=YES;
             int  nflag=-1;
+            
+            eGetData.saveDate.arrayData = nil;
 #ifdef IMAC_ZXZQ
             if(toolbarShowFlag)
                 nflag=1;
@@ -705,18 +727,29 @@
             if(m_zqdmindex>=0 && m_zqdmindex<[rowData count]){
                 if (eGetData.tradeType == RZSell)
                 {
-                    int inde = 1;
+                    int order = 1;
 #ifdef IMAC_GDZQ
-                    inde = 2;
+                    order = 2;
 #endif
+#ifdef IMAC_SXZQ
+                    order = 0;
+#endif
+
+
 #ifdef IMAC_PAZQ
-                    inde = 0;
+                    order = 0;
 #endif
-                    [operProcessDelegate getTradeProcess:[rowData objectAtIndex:inde] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:3 paraTwo:-1 pareThree:@""];
+                    [operProcessDelegate getTradeProcess:[rowData objectAtIndex:order] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:3 paraTwo:-1 pareThree:@""];
+
                 }
                 else if (eGetData.tradeType == RZBuy)
                 {
-                    [operProcessDelegate getTradeProcess:[rowData objectAtIndex:m_zqdmindex] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:2 paraTwo:-1 pareThree:@""];
+                    int order = m_zqdmindex;
+#ifdef IMAC_SXZQ
+                    order = 0;
+#endif
+                    
+                    [operProcessDelegate getTradeProcess:[rowData objectAtIndex:order] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:2 paraTwo:-1 pareThree:@""];
                 }
                 else if (eGetData.tradeType == DBPZQCX)
                 {
@@ -724,30 +757,51 @@
                 }
                 else if (eGetData.tradeType == MQHQ)
                 {
-                    int inde = 3;
+                    int order = 3;
 #ifdef IMAC_GDZQ
-                    inde = 2;
+                    order = 2;
 #endif
+#ifdef IMAC_SXZQ
+                    order = 2;
+#endif
+
 #ifdef IMAC_PAZQ
-                    inde = 2;
+                    order = 2;
 #endif
-                    [operProcessDelegate getTradeProcess:[rowData objectAtIndex:inde] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:MQHQ paraTwo:TDX_XYMQHQCX pareThree:@""];
+                    
+                    [operProcessDelegate getTradeProcess:[rowData objectAtIndex:order] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:MQHQ paraTwo:TDX_XYMQHQCX pareThree:@""];
                 }
                 else if (eGetData.tradeType == XQHQ)
                 {
-                    int inde = 3;
+                    
+                    int order = 3;
 #ifdef IMAC_GDZQ
-                    inde = 2;
+                    order = 2;
 #endif
+#ifdef IMAC_SXZQ
+                    order = 2;
+#endif
+
 #ifdef IMAC_PAZQ
-                    inde = 2;
+                    order = 2;
 #endif
                     
-                    [operProcessDelegate getTradeProcess:[rowData objectAtIndex:inde] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:XQHQ paraTwo:TDX_XYXQHQCX pareThree:@""];
+                    [operProcessDelegate getTradeProcess:[rowData objectAtIndex:order] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:XQHQ paraTwo:TDX_XYXQHQCX pareThree:@""];
                 }
                 else if(eGetData.tradeType == DBPHZ)
                 {
-                    [operProcessDelegate getTradeProcess:[rowData objectAtIndex:1] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:nflag paraTwo:-1 pareThree:@""];
+                    if(rowData.count > 7)
+                    {
+                        eGetData.saveDate.DBPHZ_ptgddm = [rowData objectAtIndex:5];
+                        eGetData.saveDate.DBPHZ_zhlb = [rowData objectAtIndex:7];
+                    }
+                    
+                    [operProcessDelegate getTradeProcess:[rowData objectAtIndex:0] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:nflag paraTwo:-1 pareThree:@""];
+                }
+                else if(eGetData.tradeType == XGSG)
+                {
+                    eGetData.saveDate.arrayData = [NSArray arrayWithArray:rowData];
+                    [operProcessDelegate getTradeProcess:[rowData objectAtIndex:m_zqdmindex] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:XGSG paraTwo:TDX_XGSG pareThree:@""];
                 }
                 else{
                     int kygf = -1;
@@ -768,8 +822,7 @@
                         
                         eGetData.saveDate.xwdm = [rowData objectAtIndex:17];
                     }
-                    
-                     [operProcessDelegate getTradeProcess:[rowData objectAtIndex:m_zqdmindex] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:nflag paraTwo:kygf pareThree:@""];
+                     [operProcessDelegate getTradeProcess:[rowData objectAtIndex:m_zqdmindex] gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:nflag paraTwo:-1 pareThree:@""];
                 }
             
             }
