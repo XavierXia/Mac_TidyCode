@@ -8755,6 +8755,98 @@ static char m_showconnerror = 1;
     return strip;
 }
 
+
+- (NSString *)GetMacIMEI
+{
+    NSTask *task;
+    task = [[NSTask alloc] init];
+    [task setLaunchPath: @"/usr/sbin/ioreg"];
+    
+    //ioreg -rd1 -c IOPlatformExpertDevice | grep -E '(UUID)'
+    
+    
+    NSArray *arguments;
+    arguments = [NSArray arrayWithObjects: @"-rd1", @"-c",@"IOPlatformExpertDevice",nil];
+    [task setArguments: arguments];
+    
+    NSPipe *pipe;
+    pipe = [NSPipe pipe];
+    [task setStandardOutput: pipe];
+    
+    NSFileHandle *file;
+    file = [pipe fileHandleForReading];
+    
+    [task launch];
+    
+    NSData *data;
+    data = [file readDataToEndOfFile];
+    
+    NSString *string;
+    string = [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
+    
+    //NSLog (@"grep returned:n%@", string);
+    
+    NSString *key = [NSString stringWithString:@"IOPlatformSerialNumber"];
+    NSRange range = [string rangeOfString:key];
+    
+    NSInteger location = range.location + [key length] + 5;
+    NSInteger length = 32 + 4;
+    range.location = location;
+    range.length = length;
+    
+    NSString *UUID = [string substringWithRange:range];
+    
+    
+    UUID = [UUID stringByReplacingOccurrencesOfString:@"-" withString:@""];
+    //NSLog(@"UIID:%@",UUID);
+    
+    return UUID;
+}
+
+-(NSString*)GetMacIMEI2
+{
+    NSTask *task=[[NSTask alloc] init];
+    [task setLaunchPath:@"/usr/sbin/ioreg"];
+    
+    NSArray *arguments=[NSArray arrayWithObjects:@"-rd1",@"-w0",@"-c",@"IOPlatformExpertDevice", nil];
+    [task setArguments:arguments];
+    
+    NSPipe *pipe=[NSPipe pipe];
+    [task setStandardOutput:pipe];
+    
+    NSFileHandle *file=[pipe fileHandleForReading];
+    
+    [task launch];
+    
+    NSData *data=[file readDataToEndOfFile];
+    
+    NSString *string=[[NSString alloc] initWithData:data  encoding:NSUTF8StringEncoding];
+    
+    NSString *key=[NSString stringWithFormat:@"%@",@"\"systemtype\" = \""];
+    NSRange range=[string rangeOfString:key];
+    if(range.length<=0)
+    {
+        RELEASEOBJ(string)
+        RELEASEOBJ(task)
+        return @"";
+    }
+    NSInteger location=range.location+[key length];
+    NSRange range1=[[string substringFromIndex:location] rangeOfString:@"\""];
+    if(range1.length<=0)
+    {
+        RELEASEOBJ(string)
+        RELEASEOBJ(task)
+        return @"";
+    }
+    NSMutableString *strserial=[[NSMutableString alloc] initWithFormat:@"%@",[string substringWithRange:NSMakeRange(location, range1.location)]];
+    int nlen=[strserial length];
+    [strserial replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:NSMakeRange(0,nlen)];
+    
+    RELEASEOBJ(string)
+    RELEASEOBJ(task)
+    return [strserial autorelease];
+}
+
 -(NSString *)GetMachinInfo
 {
     NSString *strmacinfo=@"";
@@ -8767,6 +8859,7 @@ static char m_showconnerror = 1;
     
     NSString *strinterip=[self GetInterNetIp];
     NSString *strimei=@"";
+    strimei = [self GetMacIMEI2];
     
 //#ifdef IMAC_ZSZQ
     JyConfig *pconfig=[clientinfos.qsconfigs.jyconfigs objectAtIndex:0];
