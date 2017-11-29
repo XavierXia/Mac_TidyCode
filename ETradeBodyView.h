@@ -47,4 +47,5 @@
 -(void)doasyncfail;
 -(void)cleandata;
 -(void)doyzzz;
+-(void)getDBPHZ_GDDM;
 @end

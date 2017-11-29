@@ -115,9 +115,6 @@
 }
 
 -(void)dealTradeProcess:(NSString *)_gpcode gpSetcode:(int)_setcode typeID:(int)_typeID pareOne:(int)_paraone paraTwo:(int)_paraTwo pareThree:(NSString *)_paraThree{
-    
-
-    
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(getRefreshTradeData) object:nil];
     [[self window] makeFirstResponder:self];
     
@@ -154,7 +151,6 @@
             if ([_paraThree length] > 0) {
                 [[wtView.gppriceText cell] setTitle:_paraThree];
             }
-            
             wtView.m_brefreshflag = NO;
             [wtView onviewWillAppear];
             
@@ -175,6 +171,9 @@
                     case XQHQ:
                         [userInfo setTag:TDX_XYXQHQCX];
                         break;
+                    case XGSG:
+                        [userInfo setTag:TDX_XGSG];
+                        break;
                     default:
                         [userInfo setTag:TDX_GFCX];
                         break;
@@ -183,27 +182,30 @@
                 [userInfo onviewDidAppear:NO];
                 [self addSubview:userInfo];
             }
-
             
-            if(eGetData.tradeType == XJHK)
+            switch (eGetData.tradeType)
             {
-                [self getXJHKDataFromServer];
-            }
-            else
-            {
-                [self performSelector:@selector(getRefreshTradeData) withObject:nil afterDelay:10];
-            }
-            
-            
-            if(eGetData.tradeType == DBPSell && ![eGetData.saveDate.xwdm isEqualToString:@""])
-            {
-                [[wtView.maxbuysellLabel cell] setTitle:[NSString stringWithFormat:@"%d",_paraTwo]];
+                case XJHK:
+                    [self getXJHKDataFromServer];
+                    break;
+                case XGSG:
+                    break;
+                default:
+                    [self performSelector:@selector(getRefreshTradeData) withObject:nil afterDelay:10];
+                    break;
             }
             
             break;
         case MAC_TRADE_FUNC:
             [self clearAllView];
-            userInfo.tag=_paraone;
+            if(_paraTwo == TDX_XGZQCX)
+            {
+                userInfo.tag=_paraone;
+            }
+            else
+            {
+                userInfo.tag=_paraone;
+            }
             [userInfo setFrame:NSMakeRect(0, 0, viewRect.size.width, viewRect.size.height)];
             [self addSubview:userInfo];
             [userInfo setToolbarShowFlag:YES];
@@ -222,7 +224,7 @@
                 wtCancel.m_bdrwtcx = NO;
                 wtCancel.m_ncdType = 0;
             }
-            else if(_paraone == TDX_DBPHZCDCX)
+            else if(_paraone == TDX_DBPHZCD)
             {
                 wtCancel.m_bdrwtcx = NO;
                 wtCancel.m_ncdType = 1;
@@ -339,6 +341,7 @@
     }
 }
 
+
 - (NSString *)getloginLXBy:(NSString *)num
 {
     NSString *LXTitle;
@@ -446,6 +449,10 @@
     }
 }
 
+-(void)getDBPHZ_GDDM
+{
+    [wtView getDBPHZGDDMData];
+}
 
 -(BOOL)IsNeedQueryYhInfo
 {

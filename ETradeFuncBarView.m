@@ -107,6 +107,14 @@
 		[[rmbInfoLabel cell] setTextColor:[NSColor blackColor]];
 		[self addSubview:rmbInfoLabel];
 		
+		gbInfoLabel  = [[NSTextField alloc]init];
+		[gbInfoLabel setEditable:NO];
+		[gbInfoLabel setBackgroundColor:[NSColor clearColor]];
+		[gbInfoLabel setBordered:NO];
+		[gbInfoLabel setFrame:NSZeroRect];
+		[[gbInfoLabel cell] setTextColor:[NSColor blackColor]];
+		[self addSubview:gbInfoLabel];
+		
 		myInfoLabel  = [[NSTextField alloc]init];
 		[myInfoLabel setEditable:NO];
 		[myInfoLabel setBackgroundColor:[NSColor clearColor]];
@@ -114,14 +122,6 @@
 		[myInfoLabel setFrame:NSZeroRect];
 		[[myInfoLabel cell] setTextColor:[NSColor blackColor]];
 		[self addSubview:myInfoLabel];
-        
-        gbInfoLabel  = [[NSTextField alloc]init];
-        [gbInfoLabel setEditable:NO];
-        [gbInfoLabel setBackgroundColor:[NSColor clearColor]];
-        [gbInfoLabel setBordered:NO];
-        [gbInfoLabel setFrame:NSZeroRect];
-        [[gbInfoLabel cell] setTextColor:[NSColor blackColor]];
-        [self addSubview:gbInfoLabel];
 		
 		
 		sDate = [[NSDatePicker alloc] init];
@@ -268,6 +268,7 @@
 			;
 			break;
 		case TDX_LSWT:
+        case TDX_DBPHZCD:
 			[[refreshButton cell] setTitle:@"查询"];
             if([self.barViewDelegate IsLscxFlag])
             {
@@ -310,13 +311,15 @@
 			break;
 		case TDX_GDCX:
         case TDX_IPOSGED:
+        case TDX_KSGXGCX:
 			[[refreshButton cell] setTitle:@"刷新"];
 			;
 			break;
-        case TDX_ZJLS:
+        case TDX_XGZQCX:
+	    case TDX_ZJLS:
 			[[refreshButton cell] setTitle:@"查询"];
             
-            if([self.barViewDelegate IsLscxFlag])
+            if([self.barViewDelegate IsLscxFlag]||eGetData.tradeType == ZQCX)
             {
                 [sDateLabel setFrame:NSMakeRect(0, HEIGHTMARIN, PER_LABEL_WIDTH, viewRect.size.height - 4*HEIGHTMARIN)];
                 [sDate setFrame:NSMakeRect(PER_LABEL_WIDTH, HEIGHTMARIN, PER_DATE_WIDTH, viewRect.size.height - 2*HEIGHTMARIN)];
@@ -340,26 +343,26 @@
 			
 			;
 			break;
-        case TDX_XGZQCX:
-            [[refreshButton cell] setTitle:@"查询"];
-            
-            [sDateLabel setFrame:NSMakeRect(0, HEIGHTMARIN, PER_LABEL_WIDTH, viewRect.size.height - 4*HEIGHTMARIN)];
-            [sDate setFrame:NSMakeRect(PER_LABEL_WIDTH, HEIGHTMARIN, PER_DATE_WIDTH, viewRect.size.height - 2*HEIGHTMARIN)];
-            [eDateLabel setFrame:NSMakeRect(PER_LABEL_WIDTH+PER_DATE_WIDTH+SEPARATE_WIDTH, HEIGHTMARIN, PER_LABEL_WIDTH, viewRect.size.height - 4*HEIGHTMARIN)];
-            [eDate setFrame:NSMakeRect(PER_LABEL_WIDTH*2+PER_DATE_WIDTH+SEPARATE_WIDTH, HEIGHTMARIN, PER_DATE_WIDTH, viewRect.size.height - 2*HEIGHTMARIN)];
-            
-            tstart=[[NSDate date] timeIntervalSince1970];
-            [sDate setDateValue:[[NSDate alloc] initWithTimeIntervalSince1970:tstart-nspanday*24*3600]];
-            [eDate setDateValue:[NSDate date]];
-            dateFormatter = [[[NSDateFormatter alloc] init]autorelease];
-            [dateFormatter setDateFormat:@"yyyyMMdd"];
-            currentDate = [dateFormatter stringFromDate:[sDate dateValue]];
-            eGetData.saveDate.nStartDate = atoi([currentDate UTF8String]);
-            currentDate = [dateFormatter stringFromDate:[eDate dateValue]];
-            eGetData.saveDate.nEndDate = atoi([currentDate UTF8String]);
-            
-            ;
-            break;
+//        case TDX_XGZQCX:
+//            [[refreshButton cell] setTitle:@"查询"];
+//
+//            [sDateLabel setFrame:NSMakeRect(0, HEIGHTMARIN, PER_LABEL_WIDTH, viewRect.size.height - 4*HEIGHTMARIN)];
+//            [sDate setFrame:NSMakeRect(PER_LABEL_WIDTH, HEIGHTMARIN, PER_DATE_WIDTH, viewRect.size.height - 2*HEIGHTMARIN)];
+//            [eDateLabel setFrame:NSMakeRect(PER_LABEL_WIDTH+PER_DATE_WIDTH+SEPARATE_WIDTH, HEIGHTMARIN, PER_LABEL_WIDTH, viewRect.size.height - 4*HEIGHTMARIN)];
+//            [eDate setFrame:NSMakeRect(PER_LABEL_WIDTH*2+PER_DATE_WIDTH+SEPARATE_WIDTH, HEIGHTMARIN, PER_DATE_WIDTH, viewRect.size.height - 2*HEIGHTMARIN)];
+//
+//            tstart=[[NSDate date] timeIntervalSince1970];
+//            [sDate setDateValue:[[NSDate alloc] initWithTimeIntervalSince1970:tstart-nspanday*24*3600]];
+//            [eDate setDateValue:[NSDate date]];
+//            dateFormatter = [[[NSDateFormatter alloc] init]autorelease];
+//            [dateFormatter setDateFormat:@"yyyyMMdd"];
+//            currentDate = [dateFormatter stringFromDate:[sDate dateValue]];
+//            eGetData.saveDate.nStartDate = atoi([currentDate UTF8String]);
+//            currentDate = [dateFormatter stringFromDate:[eDate dateValue]];
+//            eGetData.saveDate.nEndDate = atoi([currentDate UTF8String]);
+//
+//            ;
+//            break;
 		case TDX_CJHZ:
 			[[refreshButton cell] setTitle:@"刷新"];
 			;
@@ -392,7 +395,10 @@
 #ifdef IMAC_ZXZQ
             byhcomboflag=NO;
 #endif
-            
+#ifdef IMAC_SXZQ
+            byhcomboflag=NO;
+#endif
+
 #ifdef IMAC_PAZQ
             byhcomboflag=NO;
 #endif
@@ -481,7 +487,6 @@
             }
         }
     }
-
 
 	
 	return nil;
@@ -585,10 +590,10 @@
 			tempFloat = tempFloat  - PER_LABEL_HEIGHT;
 			
 			[[rmbInfoLabel cell] setTextColor:COLOR_GRID_NORMALCOLOR];
-            displayString = [NSString stringWithFormat:@"人民币: 余额:%.2f  可用:%.2f  可取:%.2f  股票市值:%.2f  资产:%.2f  盈亏:%.2f",tmpzjgf.ye[0],tmpzjgf.keyong[0],tmpzjgf.kqzj[0],tmpzjgf.zsz[0],tmpzjgf.zzc[0],tmpzjgf.fdyk[0]];
-            
 #ifdef  IMAC_ZXJT
             displayString = [NSString stringWithFormat:@"人民币: 余额:%.2f  可用:%.2f  股票市值:%.2f  资产:%.2f  盈亏:%.2f",tmpzjgf.ye[0],tmpzjgf.keyong[0],tmpzjgf.zsz[0],tmpzjgf.zzc[0],tmpzjgf.fdyk[0]];
+#else
+			displayString = [NSString stringWithFormat:@"人民币: 余额:%.2f  可用:%.2f  可取:%.2f  股票市值:%.2f  资产:%.2f  盈亏:%.2f",tmpzjgf.ye[0],tmpzjgf.keyong[0],tmpzjgf.kqzj[0],tmpzjgf.zsz[0],tmpzjgf.zzc[0],tmpzjgf.fdyk[0]];
 #endif
             
 #ifdef  IMAC_ZTZQ
@@ -608,10 +613,10 @@
 			
 			
 			[[myInfoLabel cell] setTextColor:COLOR_GRID_NORMALCOLOR];
-            
-            displayString = [NSString stringWithFormat:@"美  元 : 余额:%.3f  可用:%.3f  可取:%.3f  股票市值:%.3f  资产:%.3f  盈亏:%.3f",tmpzjgf.ye[1],tmpzjgf.keyong[1],tmpzjgf.kqzj[1],tmpzjgf.zsz[1],tmpzjgf.zzc[1],tmpzjgf.fdyk[1]];
 #ifdef  IMAC_ZXJT
             displayString = [NSString stringWithFormat:@"美  元 : 余额:%.3f  可用:%.3f  股票市值:%.3f  资产:%.3f  盈亏:%.3f",tmpzjgf.ye[1],tmpzjgf.keyong[1],tmpzjgf.zsz[1],tmpzjgf.zzc[1],tmpzjgf.fdyk[1]];
+#else
+			displayString = [NSString stringWithFormat:@"美  元 : 余额:%.3f  可用:%.3f  可取:%.3f  股票市值:%.3f  资产:%.3f  盈亏:%.3f",tmpzjgf.ye[1],tmpzjgf.keyong[1],tmpzjgf.kqzj[1],tmpzjgf.zsz[1],tmpzjgf.zzc[1],tmpzjgf.fdyk[1]];
 #endif
             
 #ifdef  IMAC_ZTZQ
@@ -629,9 +634,10 @@
 			tempFloat = tempFloat  - PER_LABEL_HEIGHT;
 			
 			[[gbInfoLabel cell] setTextColor:COLOR_GRID_NORMALCOLOR];
-            displayString = [NSString stringWithFormat:@"港  币 : 余额:%.2f  可用:%.2f  可取:%.2f  股票市值:%.2f  资产:%.2f  盈亏:%.2f",tmpzjgf.ye[2],tmpzjgf.keyong[2],tmpzjgf.kqzj[2],tmpzjgf.zsz[2],tmpzjgf.zzc[2],tmpzjgf.fdyk[2]];
 #ifdef  IMAC_ZXJT
             displayString = [NSString stringWithFormat:@"港  币 : 余额:%.2f  可用:%.2f  股票市值:%.2f  资产:%.2f  盈亏:%.2f",tmpzjgf.ye[2],tmpzjgf.keyong[2],tmpzjgf.zsz[2],tmpzjgf.zzc[2],tmpzjgf.fdyk[2]];
+#else
+			displayString = [NSString stringWithFormat:@"港  币 : 余额:%.2f  可用:%.2f  可取:%.2f  股票市值:%.2f  资产:%.2f  盈亏:%.2f",tmpzjgf.ye[2],tmpzjgf.keyong[2],tmpzjgf.kqzj[2],tmpzjgf.zsz[2],tmpzjgf.zzc[2],tmpzjgf.fdyk[2]];
 #endif
 #ifdef  IMAC_ZTZQ
             displayString = [NSString stringWithFormat:@"港  币 : 余额:%.2f  可用:%.2f  参考市值:%.2f  资产:%.2f  参考盈亏:%.2f",tmpzjgf.ye[2],tmpzjgf.keyong[2],tmpzjgf.zsz[2],tmpzjgf.zzc[2],tmpzjgf.fdyk[2]];
@@ -639,7 +645,7 @@
 #ifdef  IMAC_PAZQ
             displayString = [NSString stringWithFormat:@"港  币 : 余额:%.2f 可用:%.2f 可取:%.2f 在途:%.2f 参考市值:%.2f  资产:%.2f  参考盈亏:%.2f",tmpzjgf.ye[2],tmpzjgf.keyong[2],tmpzjgf.kqzj[2],tmpzjgf.ztzj[2],tmpzjgf.zsz[2],tmpzjgf.zzc[2],tmpzjgf.fdyk[2]];
 #endif
-            [[gbInfoLabel cell] setTitle:displayString];
+            [[myInfoLabel cell] setTitle:displayString];
 		}
         if (bflag==NO) {
             [rmbInfoLabel setFrame:NSMakeRect(0, tempFloat, viewRect.size.width-200, PER_LABEL_HEIGHT)];
@@ -666,7 +672,7 @@
 		[refreshButton setFrame:NSMakeRect(viewRect.size.width-PER_BUTTON_WIDTH, HEIGHTMARIN, PER_BUTTON_WIDTH, viewRect.size.height - 2*HEIGHTMARIN)];		
 		float tempFloat = refreshButton.frame.origin.x-PER_BUTTON_WIDTH;
 		
-		if (showType == TDX_CDCX || showType == TDX_DBPHZCDCX) {
+		if (showType == TDX_CDCX || showType == TDX_DBPHZCD) {
 			[chedanButton setFrame:NSMakeRect(tempFloat, HEIGHTMARIN, PER_BUTTON_WIDTH, viewRect.size.height - 2*HEIGHTMARIN)];
 			tempFloat = tempFloat - PER_BUTTON_WIDTH;
 		}

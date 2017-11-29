@@ -14,6 +14,7 @@
 #import "Delegate.h"
 #import "LockScreen.h"
 #import "NSReconnObject.h"
+#import "DBPHZLockScreen.h"
 
 @interface ETradeMainView : EUBase <NSAlertDelegate> {
 	ETradeFuncListView * funcList;
@@ -40,6 +41,7 @@
 	id<TradeDelegate> tradeDelegate;
 	
 	LockScreen * m_lockscreen;
+    DBPHZLockScreen * m_DBPHZlockscreen;
 	//断线重连
 	NSReconnObject *reconObject;
 }
@@ -48,6 +50,7 @@
 @property (readwrite, retain) ETradeFuncListView * funcList;
 @property (readwrite, retain) ETradeBodyView * bodyView;
 @property (readwrite, retain) LockScreen * m_lockscreen;
+@property (readwrite, retain) DBPHZLockScreen * m_DBPHZlockscreen;
 @property (readwrite, retain) NSReconnObject *reconObject;
 
 -(void) setFrame:(NSRect)frameRect;
@@ -56,4 +59,6 @@
 -(void)handleResult:(NSAlert *)alert withResult:(NSInteger)result;
 -(void)showlockscreen;
 -(void)unlockscreen;
+-(BOOL)DBPHZshowlockscreen;
+-(void)DBPHZunlockscreen;
 @end

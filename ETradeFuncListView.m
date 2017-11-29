@@ -121,7 +121,7 @@
 		}
 		
 		
-		funcList = [[NSOutlineView alloc] initWithFrame:NSMakeRect(0, 0, frame.size.width, frame.size.height-100)];
+		funcList = [[NSOutlineView alloc] initWithFrame:NSMakeRect(0, 0, frame.size.width, frame.size.height-30)];
 		
 		[funcList setHeaderView:nil];
 		NSTableColumn *column=[[NSTableColumn alloc] init];
@@ -207,7 +207,7 @@
     if (eGetData.clientinfos.m_bxyjyflag)
     {
         xyjy = 7;
-        xyjyZK = 6;
+        xyjyZK = 2;
     }
     
 	switch (_type) {
@@ -252,7 +252,7 @@
 						;
 					}
 					else {
-						[funcList expandItem:node];
+						//[funcList expandItem:node];
 					}
 				}
 			}
@@ -280,21 +280,21 @@
 			else if (_para == TDX_PHCX){
 				[funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:11+xyjy] byExtendingSelection:NO];
 			}
+			else if (_para == TDX_IPOSGED){
+				[funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:12+xyjy] byExtendingSelection:NO];
+			}
+            else if(_para == TDX_KSGXGCX)
+            {
+                [funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:15+xyjy] byExtendingSelection:NO];
+            }
             else if (_para == TDX_XYSXCX){
                 [funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:12+xyjy] byExtendingSelection:NO];
             }
-            else if (_para == TDX_XGSG){ //新股申购
-                [funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:1+xyjy] byExtendingSelection:NO];
+            else if (_para == TDX_DBPHZCD){
+                [funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:13+xyjy] byExtendingSelection:NO];
             }
-            else if (_para == TDX_XGSGDJKCX){
-                [funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:2+xyjy] byExtendingSelection:NO];
-            }
-            else if(_para == TDX_XGZQCX)
-            {
-                [funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:3+xyjy] byExtendingSelection:NO];
-            }
-            else if (_para == TDX_IPOSGED){
-                [funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:4+xyjy] byExtendingSelection:NO];
+            else if (_para == TDX_DBPHZCX){
+                [funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:14+xyjy] byExtendingSelection:NO];
             }
 		}
 			break;
@@ -302,7 +302,7 @@
 			if (_para == TDX_CDCX) {
 				[funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:2+xyjy] byExtendingSelection:NO];
 			}
-            else if(_para == TDX_DBPHZCDCX)
+            else if(_para == TDX_DBPHZCD)
             {
                 [funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:3+xyjy] byExtendingSelection:NO];
             }
@@ -328,7 +328,7 @@
 			if (node.level == 1) {
 				if (node.isGroup) {
 					if ([funcList isItemExpanded:node]) {
-						tempInt= 7+xyjyZK;
+						tempInt= 8+xyjyZK;
 					}
 					else {
 						tempInt=0+xyjyZK;
@@ -347,7 +347,6 @@
 			}
 			
 			if (_para == TDX_YZZZ) {
- //               [funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:13] byExtendingSelection:NO];
 				[funcList selectRowIndexes:[NSIndexSet indexSetWithIndex:5+tempInt+xyjy] byExtendingSelection:NO];
 			}
 			else if (_para == TDX_YECX){
@@ -533,7 +532,7 @@
 	else {
 		;
 	}
-    eGetData.saveDate.xwdm = @"";
+
 	
 	if ([node.name isEqualToString:@"买入"]) {
          eGetData.tradeType = DBPBuy;
@@ -568,7 +567,15 @@
         [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:DBPHZ paraTwo:01 pareThree:@""];
     }
     else if ([node.name isEqualToString:@"担保品划转撤单"]){
-        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_CANCEL_FUNC pareOne:TDX_DBPHZCDCX paraTwo:01 pareThree:@""];
+        
+        eGetData.tradeType = DBPBuy;
+        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_DBPHZCD paraTwo:01 pareThree:@""];
+        
+        
+    }
+    else if ([node.name isEqualToString:@"担保品划转查询"]){
+        eGetData.tradeType = DBPBuy;
+        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_DBPHZCX paraTwo:01 pareThree:@""];
     }
     else if ([node.name isEqualToString:@"卖券还款"]) {
         
@@ -621,6 +628,26 @@
         eGetData.tradeType = DBPBuy;
 		[operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_ZJLS paraTwo:01 pareThree:@""];
 	}
+    else if ([node.name isEqualToString:@"新股申购"]){ //新加
+        eGetData.tradeType = DBPBuy;
+        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_WT_FUNC pareOne:XGSG paraTwo:TDX_XGSG pareThree:@""];
+    }
+    else if ([node.name isEqualToString:@"    可申购新股查询"]){
+        eGetData.tradeType = DBPBuy;
+        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_KSGXGCX paraTwo:01 pareThree:@""];
+    }
+	else if ([node.name isEqualToString:@"配号查询"]){
+        eGetData.tradeType = DBPBuy;
+		[operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_PHCX paraTwo:01 pareThree:@""];
+	}
+    else if ([node.name isEqualToString:@"中签查询"]){
+        eGetData.tradeType = ZQCX;
+        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:ZQCX paraTwo:TDX_XGZQCX pareThree:@""];
+    }
+    else if ([node.name isEqualToString:@"    新股申购额度查询"]){
+        eGetData.tradeType = DBPBuy;
+		[operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_IPOSGED paraTwo:01 pareThree:@""];
+	}
 	else if ([node.name isEqualToString:@"股东查询"]){
         eGetData.tradeType = DBPBuy;
 		[operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_GDCX paraTwo:01 pareThree:@""];
@@ -630,6 +657,10 @@
         [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_XYZCCX paraTwo:01 pareThree:@""];
     }
     else if ([node.name isEqualToString:@"    信用融资合约查询"]){
+        eGetData.tradeType = XYRZHYCX;
+        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_XYRZHYCX paraTwo:01 pareThree:@""];
+    }
+    else if ([node.name isEqualToString:@"    信用合约查询"]){
         eGetData.tradeType = XYRZHYCX;
         [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_XYRZHYCX paraTwo:01 pareThree:@""];
     }
@@ -652,26 +683,6 @@
     else if ([node.name isEqualToString:@"    担保品证券查询"]){
         eGetData.tradeType = DBPZQCX;
         [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_XYDBPZQCX paraTwo:01 pareThree:@""];
-    }
-    else if ([node.name isEqualToString:@"新股申购"]){ //新加
-        eGetData.tradeType = DBPBuy;
-        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_XGSG paraTwo:01 pareThree:@""];
-    }
-    else if ([node.name isEqualToString:@"    待缴款查询"]){
-        eGetData.tradeType = DBPBuy;
-        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_XGSGDJKCX paraTwo:01 pareThree:@""];
-    }
-    else if ([node.name isEqualToString:@"配号查询"]){
-        eGetData.tradeType = DBPBuy;
-        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_PHCX paraTwo:01 pareThree:@""];
-    }
-    else if ([node.name isEqualToString:@"中签查询"]){
-        eGetData.tradeType = DBPBuy;
-        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_XGZQCX paraTwo:01 pareThree:@""];
-    }
-    else if ([node.name isEqualToString:@"    新股申购额度查询"]){
-        eGetData.tradeType = DBPBuy;
-        [operProcessDelegate getTradeProcess:@"" gpSetcode:-1 typeID:MAC_TRADE_FUNC pareOne:TDX_IPOSGED paraTwo:01 pareThree:@""];
     }
 	else if ([node.name isEqualToString:@"银证转账"]){
         eGetData.tradeType = DBPBuy;
@@ -743,7 +754,15 @@
 			else {
 				[cell setTitle:[NSString stringWithFormat:@"＋ %@",node.name]];
 			}
-		}	
+		}
+        if ([node.name isEqualToString:@"新股申购 "]) {
+            if ([funcList isItemExpanded:node]) {
+                [cell setTitle:[NSString stringWithFormat:@"－ %@",node.name]];
+            }
+            else {
+                [cell setTitle:[NSString stringWithFormat:@"＋ %@",node.name]];
+            }
+        }
 		
 		if ([node.name isEqualToString:@"银证业务"]) {
 			if ([funcList isItemExpanded:node]) {
